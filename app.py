@@ -154,27 +154,38 @@ tab_story, tab_pred, tab_test, tab_analysis = st.tabs([
 # ── Pestania 0: el trasfondo del proyecto (para defender oralmente) ───────────
 with tab_story:
     st.markdown(
-        "El valor del proyecto no es *acertar* un efecto adverso, sino **el "
-        "proceso completo de mineria de texto y aprendizaje automatico**: de "
-        "donde salen los datos, como los limpiamos y ordenamos, en que conceptos "
-        "nos apoyamos y como evaluamos. Este es el recorrido, paso a paso."
+        "El nucleo del proyecto es de **Computacion Evolutiva**: un **Algoritmo "
+        "Genetico** optimiza los pesos de una red neuronal (sin retropropagacion) "
+        "para predecir efectos adversos. Este es el recorrido, con foco en la "
+        "evolucion: como se **codifica** el problema, como es el **genotipo/fenotipo**, "
+        "como se **evalua el fitness**, que **operadores** se aplican y como **converge**."
     )
-    components.html(pipeline_html(), height=620, scrolling=False)
+
+    st.info(
+        "**Que parte es Computacion Evolutiva.** Etapas 5 a 11 del diagrama: "
+        "genotipo real = pesos de la red (Modulo 3); poblacion + funcion de fitness "
+        "F1-macro (Modulo 4); seleccion por torneo, cruce, mutacion gaussiana y "
+        "elitismo (Modulo 2); control deterministico de parametros (Modulo 5); "
+        "metricas de convergencia (Modulo 6); NSGA-II multi-objetivo (Modulo 7) y "
+        "explicabilidad del individuo (Modulo 9). Las etapas 1 a 4 (datos FAERS y "
+        "codificacion TF-IDF) son **soporte tecnico**, no la contribucion central."
+    )
+
+    components.html(pipeline_html(), height=640, scrolling=False)
     st.caption(
         "Cada etapa de arriba se corresponde con un modulo real de `src/`. "
         "La animacion avanza sola; pasa el mouse por una etapa para detenerte en ella."
     )
 
     st.markdown("---")
-    st.subheader("Problemas que tuvimos y como los resolvimos")
+    st.subheader("Decisiones de diseno evolutivo")
     st.markdown(
-        "Los datos reales nunca vienen listos. Estas son las decisiones, "
-        "estrategias y atajos que tomamos para pasar de archivos crudos de la FDA "
-        "a un dato que el modelo pueda aprender. El color del borde indica el tipo: "
-        "**datos** (azul), **rigor metodologico** (verde), **modelo** (violeta) e "
-        "**ingenieria** (naranja)."
+        "El por que de cada decision del Algoritmo Genetico (representacion, fitness, "
+        "operadores, diversidad, control de parametros, multi-objetivo, explicabilidad). "
+        "El color del borde indica el tipo: **evolutivo** (rojo), **datos** (azul), "
+        "**rigor metodologico** (verde)."
     )
-    components.html(decisions_html(), height=820, scrolling=True)
+    components.html(decisions_html(), height=900, scrolling=True)
 
 # ── Sidebar: mismos atributos con los que se entreno el modelo ────────────────
 st.sidebar.header("Datos del paciente")
@@ -484,7 +495,10 @@ with tab_analysis:
 
     # ── Seccion 1: Comparativa de modelos ─────────────────────────────────────
     st.markdown("---")
-    st.subheader("1 · Comparativa de modelos")
+    st.subheader("1 · Comparativa: AG vs baselines historicos")
+    st.caption("El modelo del proyecto es el **Algoritmo Genetico** (primera fila). "
+               "Los demas son baselines de una iteracion previa de Mineria de Texto, "
+               "incluidos solo como referencia/contraste, no como contribucion.")
     _gm = ga_cfg.get("test_metrics", {}) if ga_cfg else {}
     ga_macro = round(_gm.get("f1_macro", 0.073), 4)
     ga_micro = round(_gm.get("f1_micro", 0.059), 4)
@@ -503,13 +517,13 @@ with tab_analysis:
         "F1 micro":     [ga_micro, 0.0006, 0.0012, 0.0485, 0.150, 0.106],
         "F1 samples":   [ga_samp, 0.0006, 0.0006, 0.0455, 0.127, 0.098],
         "Hamming loss": [ga_ham, 0.0217, 0.0218, 0.2447, 0.059, 0.059],
-        "Tema de la materia": [
-            "Computacion Evolutiva — Algoritmos Geneticos",
-            "Unidad 5 — Clasificacion de texto",
-            "Unidad 3 — Clasificadores supervisados",
-            "Unidad 3 — Ensemble methods",
-            "Unidad 5 — Word embeddings + Unidad 3",
-            "Unidad 5 — Transformers / BERT",
+        "Rol en el proyecto": [
+            "★ Modelo evolutivo (este proyecto)",
+            "Baseline historico (Mineria de Texto)",
+            "Baseline historico (Mineria de Texto)",
+            "Baseline historico (Mineria de Texto)",
+            "Baseline historico (Mineria de Texto)",
+            "Baseline historico (Mineria de Texto)",
         ],
     })
     st.dataframe(comparativa, use_container_width=True, hide_index=True)
@@ -525,15 +539,19 @@ with tab_analysis:
                           margin=dict(l=0, r=0, t=20, b=0), showlegend=False)
     st.plotly_chart(fig_cmp, use_container_width=True)
     st.info(
-        "Los clasificadores clasicos (Naive Bayes y KNN) no logran predecir efectos "
-        "adversos en este problema debido al desbalance severo de clases (97 etiquetas, "
-        "densidad ~2%). Random Forest mejora significativamente usando ensemble y "
-        "class_weight='balanced'. El salto principal viene con BioBERT, que aporta "
-        "comprension semantica del texto biomedico.")
+        "El **Algoritmo Genetico** supera ampliamente a los baselines clasicos (Naive "
+        "Bayes, KNN) y se acerca a Random Forest, demostrando que la evolucion de pesos "
+        "puede entrenar un clasificador multi-label competitivo SIN retropropagacion. "
+        "Los baselines de Mineria de Texto (RF, BioBERT) se muestran solo como contraste "
+        "de una metodologia distinta; el foco del proyecto es la Computacion Evolutiva. "
+        "El F1 absoluto bajo es inherente al problema (98 etiquetas, densidad ~2%) y "
+        "comun a todos los modelos.")
 
     # ── Seccion 2: Validacion cruzada ─────────────────────────────────────────
     st.markdown("---")
-    st.subheader("2 · Validacion cruzada (5-Fold) — Random Forest")
+    st.subheader("Anexo historico · Validacion cruzada (5-Fold) — Random Forest")
+    st.caption("Baseline de Mineria de Texto, fuera del foco de Computacion Evolutiva. "
+               "Se conserva solo como referencia.")
     cv_folds = [1, 2, 3, 4, 5]
     cv_f1 = [0.0323, 0.0416, 0.0368, 0.0328, 0.0317]
     cv_mean = 0.0350
@@ -558,7 +576,8 @@ with tab_analysis:
 
     # ── Seccion 3: Curva de aprendizaje ───────────────────────────────────────
     st.markdown("---")
-    st.subheader("3 · Curva de aprendizaje")
+    st.subheader("Anexo historico · Curva de aprendizaje (Random Forest)")
+    st.caption("Baseline de Mineria de Texto, fuera del foco de Computacion Evolutiva.")
     lc_png = ROOT / "outputs" / "figures" / "learning_curve_rf.png"
     n_samples = [500, 1000, 2000, 3000, 3692]
     train_f1 = [0.7303, 0.5597, 0.4439, 0.3803, 0.3563]
@@ -584,7 +603,7 @@ with tab_analysis:
 
     # ── Seccion 4: Desbalance de clases ───────────────────────────────────────
     st.markdown("---")
-    st.subheader("4 · Desbalance de clases")
+    st.subheader("2 · Desbalance de clases (condiciona el fitness del AG)")
     y_path = DATA_DIR / "Y.csv"
     if not y_path.exists():
         st.warning("No se encontro data/processed/Y.csv para mostrar la distribucion.")
@@ -612,13 +631,17 @@ with tab_analysis:
             st.plotly_chart(fig_b, use_container_width=True)
     st.info(
         "El dataset presenta un desbalance severo: las etiquetas mas frecuentes superan "
-        "los 200 casos mientras que las menos frecuentes apenas llegan a 50. Se abordo "
-        "con class_weight='balanced' en Random Forest y pos_weight por etiqueta en "
-        "BioBERT (BCEWithLogitsLoss), pero sigue siendo el principal desafio del proyecto.")
+        "los 200 casos mientras que las menos frecuentes apenas llegan a 50. Esto "
+        "**condiciona el diseno del fitness** del AG: medir F1-macro con un umbral por "
+        "etiqueta (en vez de accuracy o un umbral global de 0.5) es lo que le da al "
+        "Algoritmo Genetico una senal util para optimizar pese al desbalance. Sigue "
+        "siendo el principal desafio del problema.")
 
     # ── Seccion 5: NER ────────────────────────────────────────────────────────
     st.markdown("---")
-    st.subheader("5 · NER — Extraccion de entidades")
+    st.subheader("Anexo historico · NER — Extraccion de entidades (Mineria de Texto)")
+    st.caption("Modulo de Mineria de Texto, fuera del foco de Computacion Evolutiva. "
+               "Se conserva solo como referencia.")
     ner_summary_path = ROOT / "outputs" / "ner_summary.json"
     ner_csv_path = ROOT / "outputs" / "ner_entities.csv"
     if not ner_summary_path.exists():
@@ -654,7 +677,7 @@ with tab_analysis:
 
     # ── Seccion 6: Extras de Computacion Evolutiva (Modulos 7 y 9) ────────────
     st.markdown("---")
-    st.subheader("6 · Extras de Computacion Evolutiva")
+    st.subheader("3 · Analisis evolutivo avanzado (XAI + NSGA-II)")
 
     fi_png = ROOT / "outputs" / "figures" / "ga_feature_importance.png"
     fi_csv = ROOT / "outputs" / "ga_feature_importance.csv"

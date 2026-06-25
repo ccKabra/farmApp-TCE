@@ -48,6 +48,51 @@ reales** y dejamos que un **Algoritmo Genético** los evolucione maximizando el
 | Curva de convergencia, fitness best/mean, presión de selección, diversidad | **Módulo 6** — métricas de EAs mono-objetivo |
 | NSGA-II precisión vs recall *(extra)* | **Módulo 7** — EAs multi-objetivo / frente de Pareto |
 | Importancia de features desde los pesos *(extra)* | **Módulo 9** — XAI + Computación Evolutiva |
+| Selección de features con cromosoma binario *(extra)* | **Módulo 2 / 3** — genotipo binario + operadores canónicos (bit-flip, cruce uniforme) |
+
+---
+
+## Qué parte es Computación Evolutiva
+
+Para que no haya dudas en la defensa, esto es lo que **es** Computación Evolutiva
+en el proyecto y lo que es **soporte técnico** (heredado, no es la contribución):
+
+**Es Computación Evolutiva (el núcleo):**
+- **Representación genotipo/fenotipo** — el genotipo es un cromosoma real con los
+  6.170 pesos de la red; el fenotipo es la red clasificadora ([ga_model.py](src/ga_model.py)).
+- **Función de fitness** — F1-macro con umbral óptimo por etiqueta ([train_ga.py](src/train_ga.py)).
+- **Operadores evolutivos** — selección por torneo, cruce (uniforme/1-punto/aritmético),
+  mutación gaussiana y **elitismo** ([train_ga.py](src/train_ga.py)).
+- **Control de parámetros** — σ de mutación decreciente (determinístico, Módulo 5).
+- **Métricas de convergencia** — best/mean fitness, diversidad y presión de
+  selección por generación ([outputs/ga_evolution.csv](outputs/ga_evolution.csv)).
+- **Multi-objetivo** — NSGA-II precisión vs recall ([train_ga_nsga2.py](src/train_ga_nsga2.py)).
+- **Genotipo binario** — selección evolutiva de features ([ga_feature_select.py](src/ga_feature_select.py)).
+- **Explicabilidad evolutiva** — importancia derivada del individuo ([ga_explain.py](src/ga_explain.py)).
+
+**Es soporte técnico (no es la contribución):**
+- El dataset FAERS y su limpieza (`preprocess.py`).
+- La codificación TF-IDF del texto del paciente: una **codificación inicial mínima**
+  para tener un vector de entrada; el AG binario incluso decide qué términos usar.
+- Los baselines de Minería de Texto (Naive Bayes, KNN, Random Forest, BioBERT) y el
+  NER: se conservan **solo como referencia/contraste**, marcados como *baseline
+  histórico* en la app. No son parte de la solución evolutiva.
+
+---
+
+## Decisiones de diseño evolutivo
+
+| Decisión | Por qué | Módulo |
+|---|---|---|
+| **AG en vez de retropropagación** | El objetivo de la materia es optimizar sin gradiente: los pesos son el cromosoma y la evolución los ajusta. | 2 |
+| **Genotipo real (no binario) para los pesos** | Los pesos son continuos; la representación natural es real, con operadores reales. Además mostramos el genotipo **binario** en la selección de features. | 3 |
+| **Sesgos inicializados en ≈0** | Con densidad 2%, inicializar en logit(prior) aplanaba el fitness en 0 (nada cruzaba el umbral). Con sesgos ≈0 el paisaje tiene pendiente. | 4 |
+| **Fitness = F1-macro con umbral por etiqueta** | Un umbral global de 0.5 da señal plana con clases desbalanceadas; el umbral por etiqueta premia cualquier mejora de ranking. | 4 |
+| **Selección por torneo (no ruleta)** | La ruleta crea superindividuos y es sensible a la escala; el torneo da presión controlada. | 2 |
+| **Elitismo + mutación para la diversidad** | Elitismo garantiza no empeorar; la mutación reinyecta variación y frena la convergencia prematura. | 2 |
+| **Control determinístico de σ** | Explorar al inicio (σ alta) y explotar al final (σ baja). | 5 |
+| **NSGA-II para precisión vs recall** | Son objetivos en conflicto; el frente de Pareto muestra todos los compromisos en vez de un único F1. | 7 |
+| **Selección de features con cromosoma binario** | El AG decide qué subconjunto de TF-IDF usar: así el TF-IDF es materia prima, no la contribución. | 2/3 |
 
 ---
 
@@ -80,6 +125,7 @@ farmApp-TCE/
     ├── train_ga.py           # ★ EL ALGORITMO GENÉTICO (entrenamiento)
     ├── ga_explain.py         # ★ extra XAI (importancia de features)  [Módulo 9]
     ├── train_ga_nsga2.py     # ★ extra multi-objetivo NSGA-II         [Módulo 7]
+    ├── ga_feature_select.py  # ★ extra seleccion de features binaria  [Módulo 2/3]
     ├── labels.py / data_split.py   # vocabulario de etiquetas + split 70/30 determinista
     ├── preprocess.py / explore.py / prepare_features.py
     ├── eval_test_cases.py          # predicción vs realidad sobre el 30% de test (usa AG)
@@ -129,6 +175,7 @@ python src/validate_sider.py
 # Extras (opcionales, alineados a los módulos):
 python src/ga_explain.py         # importancia de features (XAI, Módulo 9)
 python src/train_ga_nsga2.py     # multi-objetivo precisión vs recall (NSGA-II, Módulo 7)
+python src/ga_feature_select.py  # selección de features con cromosoma binario (Módulo 2/3)
 ```
 
 En Windows también: `paso1_datos.bat` → `paso2_entrenar.bat` → `paso3_evaluar.bat`.
@@ -184,19 +231,29 @@ del proyecto, así los casos de test coinciden con los de la app.
 
 | Modelo | F1 macro | F1 micro | F1 samples | Hamming loss |
 |--------|---------:|---------:|-----------:|-------------:|
-| Naive Bayes (MultinomialNB) | 0.0001 | 0.0006 | 0.0006 | 0.0217 |
-| KNN (k=5, coseno) | 0.0006 | 0.0012 | 0.0006 | 0.0218 |
-| **Algoritmo Genético (red 1 capa)** | **0.0732** | **0.0594** | **0.0530** | **0.2832** |
-| Random Forest + TF-IDF | 0.107 | 0.104 | 0.105 | 0.245 |
-| Random Forest + BioBERT | 0.130 | 0.150 | 0.127 | — |
-| BioBERT fine-tuned | 0.128 | 0.106 | 0.098 | 0.059 |
+| **Algoritmo Genético (red 1 capa) — ESTE PROYECTO** | **0.0732** | **0.0594** | **0.0530** | **0.2832** |
+| Naive Bayes — *baseline histórico* | 0.0001 | 0.0006 | 0.0006 | 0.0217 |
+| KNN (k=5) — *baseline histórico* | 0.0006 | 0.0012 | 0.0006 | 0.0218 |
+| Random Forest + TF-IDF — *baseline histórico* | 0.107 | 0.104 | 0.105 | 0.245 |
+| Random Forest + BioBERT — *baseline histórico* | 0.130 | 0.150 | 0.127 | — |
+| BioBERT fine-tuned — *baseline histórico* | 0.128 | 0.106 | 0.098 | 0.059 |
 
-> El AG (con features TF-IDF simples y una red chica) **supera ampliamente** a
-> Naive Bayes y KNN y se acerca a Random Forest, demostrando que un AG puede
-> entrenar un clasificador multi-label de texto biomédico. **Validación externa
-> contra SIDER 4.1: F1 medio ≈ 0.32** (precisión 0.45, recall 0.28) sobre los
-> fármacos mapeables. El objetivo no es ganarle a BioBERT sino mostrar la
-> aplicabilidad de la Computación Evolutiva (F1 > 0.05 holgado).
+> El AG **supera ampliamente** a Naive Bayes y KNN y se acerca a Random Forest,
+> demostrando que la **evolución de pesos** puede entrenar un clasificador
+> multi-label competitivo **sin retropropagación**. Los modelos de Minería de Texto
+> (RF, BioBERT) son *baseline histórico*: se incluyen solo como contraste de otra
+> metodología, no son la contribución. **Validación externa contra SIDER 4.1: F1
+> medio ≈ 0.32** (precisión 0.45, recall 0.28). Objetivo: mostrar la aplicabilidad
+> de la Computación Evolutiva (F1 > 0.05 holgado), no ganarle a un transformer.
+
+**Extras evolutivos (resultados):**
+- **Selección de features con cromosoma binario** ([ga_feature_select.py](src/ga_feature_select.py)):
+  el AG eligió **59 de 154 features (38%)** y obtuvo **F1 0.133 > 0.124** que usando
+  todas — menos features y mejor desempeño.
+- **NSGA-II** ([train_ga_nsga2.py](src/train_ga_nsga2.py)): frente de Pareto con ~21
+  soluciones no dominadas, desde alta precisión hasta alto recall.
+- **XAI** ([ga_explain.py](src/ga_explain.py)): los features más influyentes del
+  individuo evolucionado son fármacos e indicaciones concretos (interpretable).
 
 El problema es inherentemente difícil (98 etiquetas, densidad ~2%, texto clínico
 ruidoso): el F1 absoluto bajo es esperable y común a todos los modelos.

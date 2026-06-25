@@ -1,17 +1,14 @@
 """
-Narrativa visual del pipeline para la defensa oral.
+Narrativa visual del proyecto para la defensa oral — enfoque COMPUTACION EVOLUTIVA.
 
-Genera un diagrama HTML/CSS animado que cuenta el trasfondo del proyecto: de
-donde salen los datos, que les hacemos, como los ordenamos, en que concepto de
-la materia nos apoyamos, y -lo importante- un ejemplo real que va recorriendo
-cada etapa para mostrar el antes y el despues y como queda en codigo para que
-el modelo lo entienda. Pensado para proyectarse en clase en vez de leer codigo.
+Genera un diagrama HTML/CSS animado que cuenta el recorrido del proyecto puesto
+el foco en el Algoritmo Genetico: de donde sale el dato, como se CODIFICA
+(genotipo), como es el FENOTIPO (la red), como se EVALUA (fitness), que OPERADORES
+evolutivos se aplican, como CONVERGE y como se EXPLICA y se valida.
 
-Ejemplo conductor (caso real de dataset.csv, primaryid 254258761):
-    mujer, 74 anios, farmaco LENALIDOMIDE, indicacion "Plasma Cell Myeloma".
-
-La app (app.py) solo lo embebe con st.components.v1.html(pipeline_html()).
-Cada etapa se corresponde 1:1 con un modulo real de src/ (campo 'archivo').
+La preparacion del dato (FAERS) se cuenta breve, como soporte; el centro del
+relato es la evolucion. La app (app.py) solo lo embebe con
+st.components.v1.html(pipeline_html()). Cada etapa apunta a un archivo real de src/.
 """
 
 
@@ -28,292 +25,312 @@ def _flow(*boxes, note=None):
     return f'<div class="flow">{inner}</div>{extra}'
 
 
-# Cada etapa: titulo, que hace (contado en lenguaje llano), en que nos apoyamos
-# (el concepto de la materia), el archivo de src/ que lo implementa, y un
-# ejemplo real que muestra la transformacion.
+# Cada etapa: titulo, que hace (lenguaje llano), en que concepto de la materia se
+# apoya (campo 'base'), el archivo de src/ que lo implementa, y un ejemplo real.
 STAGES = [
     {
-        "titulo": "Origen de los datos: FDA FAERS",
-        "que": "Arrancamos de reportes reales de eventos adversos que medicos y "
-               "pacientes le mandan a la FDA. Lo primero que descubrimos es que un "
-               "caso no viene en un solo lugar: llega partido en cuatro archivos de "
-               "texto que solo comparten un numero de reporte (primaryid).",
-        "base": "Fuente de datos abierta y real. Datos crudos, sin estructura.",
-        "archivo": "data/raw/ + config.faers_files()",
+        "titulo": "El problema a optimizar (FDA FAERS)",
+        "que": "Partimos de reportes reales de efectos adversos de la FDA. Para un "
+               "Algoritmo Genetico esto es, sobre todo, un PROBLEMA DE OPTIMIZACION "
+               "concreto: dado un paciente, predecir sus efectos adversos. El dato es "
+               "el soporte; la contribucion del proyecto es como lo resolvemos.",
+        "base": "Definicion del problema de optimizacion. El dato es el medio, no el fin.",
+        "archivo": "preprocess.py, data_split.py",
         "ejemplo": _flow(
-            _box("DEMO.txt", "primaryid=254258761<br>age=74 . age_cod=YR . sex=F", "raw"),
-            _box("DRUG.txt", "drugname=LENALIDOMIDE<br>role_cod=PS", "raw"),
-            _box("REAC.txt", "pt=ARTHROPATHY", "raw"),
-            _box("INDI.txt", "indi_pt=PLASMA CELL MYELOMA", "raw"),
-            note="Es el mismo paciente repartido en cuatro archivos. El primaryid es "
-                 "el hilo que nos deja volver a unirlos.",
+            _box("CASO REAL", "mujer, 74 anios<br>farmaco: LENALIDOMIDE<br>indic.: Plasma Cell Myeloma", "raw"),
+            _box("OBJETIVO", "predecir el conjunto de<br>~98 efectos adversos posibles", "out"),
+            note="El AG buscara un clasificador que, para casos como este, acierte que "
+                 "efectos adversos van a aparecer.",
         ),
     },
     {
-        "titulo": "Limpieza y normalizacion",
-        "que": "Antes de poder usar nada tuvimos que ordenar el desorden: la edad "
-               "podia estar en anios, meses o decadas; el peso en kilos o en libras; "
-               "y el sexo aparecia escrito de muchas maneras. Llevamos todo a una "
-               "unica forma con tablas de equivalencia.",
-        "base": "Preprocesamiento y limpieza. La calidad del dato condiciona todo lo demas.",
-        "archivo": "preprocess.py, load_demo()",
+        "titulo": "Preparacion del dato (soporte)",
+        "que": "Tarea de soporte, no el aporte central: unimos los cuatro archivos de "
+               "FAERS por su numero de reporte, normalizamos edad/peso/sexo y nos "
+               "quedamos con la ultima version de cada caso. Queda una fila por paciente.",
+        "base": "Integracion y limpieza de datos. Necesario para tener un problema bien definido.",
+        "archivo": "preprocess.py",
         "ejemplo": _flow(
-            _box("CRUDO", "age=\"74\"<br>age_cod=\"YR\"", "raw"),
-            _box("regla", "age_map = {'YR':1,<br>'MON':1/12, 'DEC':10}", "proc"),
-            _box("LIMPIO", "age_years = 74.0<br>sex = \"F\" . weight = NaN", "out"),
-            note="'YR' significa anios, asi que 74 queda igual; si dijera 'DEC' "
-                 "(decadas) seria 74 x 10. Cuando falta un dato lo dejamos en NaN en "
-                 "vez de inventar un valor.",
+            _box("4 ARCHIVOS", "DEMO + DRUG +<br>REAC + INDI", "raw"),
+            _box("union + limpieza", "merge(primaryid)<br>edad/peso/sexo normalizados", "proc"),
+            _box("UNA FILA", "{sex:F, age:74, drug:<br>LENALIDOMIDE, indi:...}", "out"),
+            note="De cuatro archivos sueltos a una fila por caso: la unidad sobre la que "
+                 "trabaja el AG.",
         ),
     },
     {
-        "titulo": "Armado del caso completo",
-        "que": "Con los datos ya limpios, volvemos a pegar los cuatro archivos por el "
-               "primaryid para reconstruir el caso entero. Aca tomamos una decision "
-               "importante: separar el farmaco principal sospechoso (rol PS) de las "
-               "otras medicaciones que el paciente venia tomando, porque las dos cosas "
-               "le dicen algo distinto al modelo.",
-        "base": "Integracion de datos, join relacional y conocimiento del dominio FAERS.",
-        "archivo": "preprocess.py, build_dataset()",
-        "ejemplo": _flow(
-            _box("cuatro archivos", "DEMO + DRUG +<br>REAC + INDI", "raw"),
-            _box("union por id", "merge(on='primaryid')", "proc"),
-            _box("UNA FILA", "{sex:F, age:74,<br>drug:LENALIDOMIDE (PS),<br>indi:Plasma Cell Myeloma}", "out"),
-            note="Pasamos de cuatro archivos sueltos a una fila por caso, que es la "
-                 "unidad con la que despues trabaja el modelo.",
-        ),
-    },
-    {
-        "titulo": "Que vamos a predecir",
-        "que": "Tuvimos que decidir cuales reacciones valia la pena predecir. Nos "
-               "quedamos con las que aparecen seguido (al menos 300 veces) y sacamos "
-               "los terminos que en realidad no son efectos del farmaco, como errores "
-               "de dosis o el embarazo. Si no, el modelo terminaba aprendiendo ruido.",
-        "base": "Definicion del objetivo, vocabulario MedDRA y el problema del desbalance.",
+        "titulo": "Objetivo y restricciones (constraints)",
+        "que": "Definimos QUE se predice: nos quedamos con las reacciones frecuentes "
+               "(>= 300 casos) y descartamos terminos que no son efectos del farmaco "
+               "(errores de dosis, embarazo). Es acotar el espacio del problema con "
+               "restricciones de dominio.",
+        "base": "Objetivo y constraints del problema (Modulo 4: fitness y restricciones).",
         "archivo": "labels.py, build_label_vocab()",
         "ejemplo": _flow(
-            _box("REACCIONES CRUDAS", "Nausea . Pyrexia .<br>Off Label Use . Pemphigus", "raw"),
-            _box("filtros", "frecuencia >= 300<br>y que sea un efecto real", "proc"),
-            _box("ETIQUETAS (Y)", "Nausea (se queda)<br>Pyrexia (se queda)<br>"
-                                  "Off Label Use (no es efecto)<br>Pemphigus (muy raro)", "out"),
-            note="Al final solo dejamos lo que es un efecto adverso de verdad y que "
-                 "aparece lo suficiente como para poder aprenderlo.",
+            _box("REACCIONES CRUDAS", "Nausea . Off Label Use .<br>Pemphigus . Arthralgia", "raw"),
+            _box("constraints", "frecuencia >= 300<br>+ que sea efecto real", "proc"),
+            _box("98 ETIQUETAS (Y)", "Nausea, Arthralgia, ...<br>(las que el AG aprende)", "out"),
+            note="El vocabulario de 98 efectos define las salidas de la red que el AG va "
+                 "a optimizar.",
         ),
     },
     {
-        "titulo": "El paciente como una frase",
-        "que": "Para que BioBERT pueda leer un caso, lo convertimos en una sola frase "
-               "armada siempre igual. Usamos la misma funcion al entrenar y en la app, "
-               "asi nos aseguramos de que el modelo nunca reciba un formato distinto "
-               "del que aprendio.",
-        "base": "Ingenieria de features, representacion del texto y consistencia entre "
-                "entrenamiento e inferencia.",
-        "archivo": "patient_text.py, build_patient_text()",
+        "titulo": "Codificacion del dato de entrada (soporte)",
+        "que": "Para meter el caso a la red lo convertimos en un vector numerico: TF-IDF "
+               "sobre el texto del paciente + edad/sexo/peso. IMPORTANTE: esto es una "
+               "codificacion inicial MINIMA del dato, no el aporte del proyecto. Lo "
+               "mantenemos chico (154 numeros) justamente para que el cromosoma del AG "
+               "sea manejable.",
+        "base": "Codificacion minima del dato. Soporte tecnico, no contribucion central.",
+        "archivo": "ga_features.py (PatientFeaturizer)",
         "ejemplo": _flow(
-            _box("FILA", "{age:74, sex:F,<br>drug:LENALIDOMIDE,<br>indi:Plasma Cell Myeloma}", "raw"),
-            _box("FRASE PARA EL MODELO",
-                 "\"patient: age 74 years, sex<br>female, weight unknown. drug:<br>"
-                 "LENALIDOMIDE. ... indication:<br>Plasma Cell Myeloma\"", "out"),
-            note="Una plantilla fija toma los campos sueltos y los convierte en lenguaje "
-                 "natural, que es lo que BioBERT sabe interpretar.",
+            _box("FRASE DEL PACIENTE", "\"patient: age 74 ...<br>drug: LENALIDOMIDE ...\"", "raw"),
+            _box("codificacion minima", "TF-IDF + edad/sexo/peso", "proc"),
+            _box("VECTOR 154d", "[0.0, 0.31, 0.0, ...,<br>age=0.74, sexF=1]", "out"),
+            note="El vector es solo la ENTRADA. Lo interesante (los pesos) lo descubre el "
+                 "Algoritmo Genetico en las etapas siguientes.",
         ),
     },
     {
-        "titulo": "De texto a numeros",
-        "que": "El modelo no entiende palabras, entiende numeros. El tokenizer parte la "
-               "frase en pedacitos y les pone un id, y despues BioBERT transforma esa "
-               "secuencia en un vector de 768 numeros que resume el significado medico "
-               "de todo el caso.",
-        "base": "Tokenizacion, word embeddings y modelos de lenguaje del tipo BERT.",
-        "archivo": "biobert_embeddings.py, prepare_features.py",
+        "titulo": "Genotipo y fenotipo",
+        "que": "Aca empieza la Computacion Evolutiva. El FENOTIPO es una red de una capa "
+               "oculta (154 -> 24 -> 98). Su GENOTIPO es el vector real con TODOS sus "
+               "pesos y sesgos: 6.170 numeros reales. Optimizar esos pesos ES entrenar "
+               "la red, pero con evolucion en vez de gradiente.",
+        "base": "Representacion NO binaria / genotipo real (Modulo 3). Genotipo vs fenotipo.",
+        "archivo": "ga_model.py (GAClassifier)",
         "ejemplo": _flow(
-            _box("FRASE", "\"patient: age 74 ...\"", "raw"),
-            _box("tokenizer", "[101, 5723, 2287,<br>6390, 1010, ...]", "proc"),
-            _box("VECTOR 768d", "[0.12, -0.84, 0.05,<br>0.41, ...]  (significado)", "model"),
-            note="Cada caso termina siendo un punto en un espacio de 768 dimensiones. "
-                 "Ahi adentro el modelo compara casos parecidos y aprende.",
+            _box("GENOTIPO (cromosoma)", "[w1, w2, ..., w6170]<br>(numeros reales)", "raw"),
+            _box("set_genome()", "desempaqueta en<br>W1, b1, W2, b2", "proc"),
+            _box("FENOTIPO (red)", "154 -> ReLU(24) -><br>sigmoide(98)", "model"),
+            note="Cada individuo de la poblacion es un cromosoma; al desempaquetarlo se "
+                 "obtiene una red clasificadora concreta.",
         ),
     },
     {
-        "titulo": "De lo simple a lo potente",
-        "que": "No empezamos por lo mas complejo. Probamos modelos de menor a mayor "
-               "potencia (Naive Bayes y KNN como base, despues Random Forest, y "
-               "finalmente fine-tuning de BioBERT) justamente para poder mostrar por "
-               "que hizo falta cada salto.",
-        "base": "Clasificadores supervisados, ensembles y transformers (BERT).",
-        "archivo": "train_*.py, naive_bayes, knn, rf",
+        "titulo": "Poblacion y funcion de fitness",
+        "que": "Creamos una poblacion de 60 redes con pesos aleatorios. La calidad de "
+               "cada individuo (su FITNESS) es el F1-macro que logra prediciendo sobre "
+               "los datos, calibrando el mejor umbral por etiqueta. Ese numero es lo que "
+               "la evolucion va a maximizar.",
+        "base": "Funcion de fitness y poblacion (Modulo 2 y 4).",
+        "archivo": "train_ga.py, fitness_of()",
         "ejemplo": _flow(
-            _box("VECTOR 768d", "[0.12, -0.84, ...]", "raw"),
-            _box("BioBERTClassifier", "Linear, ReLU, Linear<br>(98 salidas)", "proc"),
-            _box("PROBABILIDADES", "Arthralgia: 0.69<br>Nausea: 0.55<br>Anaemia: 0.22", "model"),
-            note="El modelo no elige una sola respuesta: da una probabilidad para cada "
-                 "uno de los 98 efectos posibles, porque un caso puede tener varios.",
+            _box("INDIVIDUO", "una red (cromosoma)", "raw"),
+            _box("evaluar", "predice -> compara con<br>las etiquetas reales", "proc"),
+            _box("FITNESS", "F1-macro = 0.058<br>(que tan buena es)", "out"),
+            note="Mejor fitness = mejor clasificador. Es la presion que guia toda la "
+                 "busqueda.",
         ),
     },
     {
-        "titulo": "Donde cortamos para decidir",
-        "que": "Como hay muchisimos mas 'no' que 'si', cortar siempre en 0.5 daba malos "
-               "resultados. Lo que hicimos fue buscar, para cada efecto por separado, el "
-               "punto de corte que mejor equilibra acertar sin exagerar.",
-        "base": "Optimizacion del umbral de decision y manejo del desbalance (pos_weight).",
-        "archivo": "train.py / tune_threshold.py",
+        "titulo": "Operadores evolutivos",
+        "que": "Generacion a generacion: elegimos padres por TORNEO (compiten de a 3, "
+               "gana el mas apto), los combinamos con CRUCE, y aplicamos MUTACION "
+               "GAUSSIANA (ruido a algunos pesos). Ademas, los 2 mejores pasan intactos "
+               "por ELITISMO: garantia de que el mejor nunca empeora.",
+        "base": "Seleccion, cruce, mutacion y elitismo (Modulo 2).",
+        "archivo": "train_ga.py (tournament/crossover/mutate)",
+        "ejemplo": _flow(
+            _box("PADRES", "individuo A + individuo B<br>(ganaron su torneo)", "raw"),
+            _box("cruce + mutacion", "mezcla de pesos +<br>ruido gaussiano N(0,sigma)", "proc"),
+            _box("HIJOS", "nuevas redes, algunas<br>mejores que los padres", "out"),
+            note="La recombinacion explota lo bueno que ya existe; la mutacion mantiene "
+                 "diversidad y explora variantes nuevas.",
+        ),
+    },
+    {
+        "titulo": "Control de parametros y convergencia",
+        "que": "La mutacion arranca grande (explorar) y se achica con las generaciones "
+               "(explotar): es control deterministico de parametros. Registramos, por "
+               "generacion, el mejor fitness, el promedio, la diversidad y la presion de "
+               "seleccion, y los graficamos: la curva de convergencia.",
+        "base": "Control de parametros (Modulo 5) y metricas de EAs mono-objetivo (Modulo 6).",
+        "archivo": "train_ga.py -> outputs/ga_evolution.csv",
+        "ejemplo": _flow(
+            _box("GEN 1", "best=0.048<br>sigma=0.20 (explora)", "raw"),
+            _box("...80 generaciones...", "sigma baja a 0.02<br>(explota)", "proc"),
+            _box("GEN 80", "best=0.088<br>la poblacion convergio", "out"),
+            note="El mejor y el promedio suben juntos: la poblacion entera mejora, no un "
+                 "solo individuo con suerte.",
+        ),
+    },
+    {
+        "titulo": "Umbral de decision por etiqueta",
+        "que": "Las salidas son probabilidades. Como hay muchos mas 'no' que 'si', "
+               "cortar en 0.5 funciona mal. Para el mejor individuo buscamos, sobre "
+               "validacion, el punto de corte ideal de CADA efecto por separado.",
+        "base": "Manejo del desbalance / ajuste de la decision (constraint multi-label).",
+        "archivo": "train_ga.py, best_thresholds_and_f1()",
         "ejemplo": _flow(
             _box("PROBABILIDAD", "Arthralgia = 0.69<br>Anaemia = 0.22", "raw"),
-            _box("umbral propio", "Arthralgia: >= 0.41<br>Anaemia: >= 0.35", "proc"),
+            _box("umbral propio", "Arthralgia >= 0.41<br>Anaemia >= 0.35", "proc"),
             _box("DECISION", "Arthralgia: si<br>Anaemia: no", "out"),
-            note="Cada etiqueta tiene su propio umbral, ajustado para que esa etiqueta "
-                 "en particular salga lo mejor posible.",
+            note="98 umbrales (uno por efecto) calibrados sobre validacion, no un 0.5 "
+                 "para todos.",
         ),
     },
     {
-        "titulo": "Como medimos si funciona",
-        "que": "Evaluamos sobre un 30% de casos que el modelo nunca vio, separados desde "
-               "el principio con una semilla fija. Comparamos lo que predijo contra lo "
-               "que realmente paso y contamos aciertos, falsas alarmas y cosas que se le "
-               "escaparon, sin maquillar los errores.",
-        "base": "Separacion train/test, validacion cruzada y metricas multi-label (F1).",
-        "archivo": "eval_test_cases.py, cross_validation.py",
+        "titulo": "Multi-objetivo: NSGA-II",
+        "que": "Precision y recall estan en conflicto: predecir mas sube uno y baja el "
+               "otro. En vez de un solo F1, con NSGA-II evolucionamos el FRENTE DE "
+               "PARETO: el conjunto de soluciones no dominadas que ofrecen distintos "
+               "compromisos precision/recall.",
+        "base": "EAs multi-objetivo, dominancia de Pareto, crowding distance (Modulo 7).",
+        "archivo": "train_ga_nsga2.py",
         "ejemplo": _flow(
-            _box("REALES (FAERS)", "{Arthralgia, Nausea}", "raw"),
-            _box("PREDICHAS", "{Arthralgia, Pyrexia}", "model"),
-            _box("RESULTADO", "acierto: Arthralgia<br>falsa alarma: Pyrexia<br>se escapo: Nausea", "out"),
-            note="De esa comparacion salen la precision, el recall y el F1. Lo mostramos "
-                 "caso por caso, con los errores incluidos.",
+            _box("UN SOLO F1", "esconde el compromiso", "raw"),
+            _box("NSGA-II", "non-dominated sort +<br>crowding distance", "proc"),
+            _box("FRENTE DE PARETO", "21 soluciones:<br>alta precision <-> alto recall", "model"),
+            note="El profesor puede elegir el punto del frente que prefiera segun quiera "
+                 "mas precision o mas cobertura.",
         ),
     },
     {
-        "titulo": "Contraste con SIDER 4.1",
-        "que": "Como prueba final no quisimos creernos solos. Comparamos nuestras "
-               "predicciones contra SIDER, una base de datos curada de efectos adversos "
-               "ya conocidos para cada farmaco. Es una fuente independiente de la nuestra.",
+        "titulo": "Explicabilidad evolutiva (XAI)",
+        "que": "Una ventaja de evolucionar una red CHICA es que el individuo resultante "
+               "es inspeccionable. Propagando las magnitudes de sus pesos sacamos QUE "
+               "features pesan mas en sus decisiones: que terminos del texto y que "
+               "variables guian al modelo.",
+        "base": "XAI + Computacion Evolutiva (Modulo 9).",
+        "archivo": "ga_explain.py",
+        "ejemplo": _flow(
+            _box("INDIVIDUO EVOLUCIONADO", "pesos W1, W2", "raw"),
+            _box("|W1| propagado por |W2|", "importancia por feature", "proc"),
+            _box("EXPLICACION", "pesan: gabapentin,<br>hypertension, edad, sexo...", "out"),
+            note="El modelo no es una caja negra: podemos mostrar en que se apoya para "
+                 "predecir.",
+        ),
+    },
+    {
+        "titulo": "Validacion externa: SIDER 4.1",
+        "que": "Como prueba independiente comparamos las predicciones del individuo "
+               "evolucionado contra SIDER, una base curada de efectos adversos conocidos "
+               "por farmaco. Es una fuente externa, ajena a nuestros datos.",
         "base": "Validacion externa contra una referencia independiente.",
-        "archivo": "validate_sider.py + pestaña de la app",
+        "archivo": "validate_sider.py",
         "ejemplo": _flow(
             _box("FARMACO", "LENALIDOMIDE", "raw"),
-            _box("buscar en SIDER", "nombre -> STITCH id -><br>efectos conocidos", "proc"),
-            _box("CONTRASTE", "SIDER: {Arthralgia,<br>Fatigue, ...}<br>coincide con lo que predijimos", "out"),
-            note="Si lo que predecimos ya esta documentado en SIDER, tenemos evidencia "
-                 "independiente de que el modelo va por buen camino.",
+            _box("buscar en SIDER", "nombre -> efectos<br>documentados", "proc"),
+            _box("CONTRASTE", "F1 ~ 0.32 vs SIDER<br>(coincide bastante)", "out"),
+            note="Si lo que predecimos ya esta documentado, tenemos evidencia "
+                 "independiente de que el AG aprendio algo util.",
         ),
     },
 ]
 
 
-# ── Problemas reales que tuvimos y como los resolvimos (todos verificables en el
-# codigo). cat = categoria para el color de la tarjeta. ──────────────────────
+# ── Decisiones de diseno EVOLUTIVO (todas verificables en el codigo).
+# cat = categoria para el color de la tarjeta. ────────────────────────────────
 DECISIONS = [
     {
-        "cat": "datos", "etiqueta": "Juntar los datos",
-        "problema": "Cada caso venia partido en cuatro archivos (DEMO, DRUG, REAC e "
-                    "INDI) y ademas repartido en varios trimestres, asi que no habia "
-                    "un unico lugar de donde leer un paciente completo.",
-        "solucion": "Primero concatenamos todos los trimestres de cada tipo y despues "
-                    "unimos los cuatro archivos con un merge por primaryid. Para no "
-                    "atarnos a una lista fija, los buscamos por patron: si manana hay "
-                    "un trimestre nuevo, no hay que tocar el codigo.",
-        "conv": "Convencion: los archivos quedan ordenados por trimestre, con el mas "
-                "nuevo al final.",
-        "archivo": "preprocess.py, config.faers_files()",
+        "cat": "evolutivo", "etiqueta": "Por que un AG y no retropropagacion",
+        "problema": "El objetivo de la materia es resolver el problema con Computacion "
+                    "Evolutiva, no con el entrenamiento clasico por gradiente.",
+        "solucion": "Tratamos los pesos de la red como un cromosoma y los optimizamos con "
+                    "un Algoritmo Genetico (seleccion + cruce + mutacion). Optimizar los "
+                    "pesos ES entrenar la red, pero por evolucion.",
+        "conv": "El aporte del proyecto es el AG; la red y las features son el soporte.",
+        "archivo": "train_ga.py, ga_model.py",
     },
     {
-        "cat": "datos", "etiqueta": "Casos duplicados",
-        "problema": "Un mismo paciente aparece en mas de un trimestre porque la FDA va "
-                    "actualizando el reporte, asi que el caso nos quedaba repetido.",
-        "solucion": "Como los archivos ya estan ordenados del mas viejo al mas nuevo, "
-                    "simplemente nos quedamos con la ultima version de cada paciente.",
-        "conv": "Atajo: aprovechamos que el orden de los archivos ya es la fecha, asi "
-                "no tuvimos que parsear ninguna marca de tiempo.",
-        "archivo": "preprocess.py, load_demo()",
+        "cat": "evolutivo", "etiqueta": "Genotipo real, no binario",
+        "problema": "Los pesos de una red son numeros continuos; una cadena de bits no es "
+                    "la representacion natural.",
+        "solucion": "Usamos un genotipo de numeros reales (Modulo 3) con operadores para "
+                    "reales: cruce uniforme/aritmetico y mutacion gaussiana. Como extra, "
+                    "mostramos que tambien podria usarse un cromosoma BINARIO para "
+                    "seleccionar features.",
+        "conv": "La representacion se elige segun el problema; aca lo natural es real.",
+        "archivo": "ga_model.py, ga_features.py",
     },
     {
-        "cat": "datos", "etiqueta": "Unidades mezcladas",
-        "problema": "La edad venia a veces en anios, otras en meses o decadas; el peso "
-                    "en kilos o en libras; y el sexo escrito de formas distintas. Nada "
-                    "de eso se podia comparar tal cual.",
-        "solucion": "Armamos tablas de equivalencia para llevar la edad a anios, el "
-                    "peso a kilos y el sexo a M, F o desconocido.",
-        "conv": "Convencion: si no sabemos la unidad, no inventamos; dejamos el valor "
-                "como desconocido (NaN).",
-        "archivo": "preprocess.py, load_demo()",
+        "cat": "evolutivo", "etiqueta": "El fitness tenia que tener pendiente",
+        "problema": "Con densidad de positivos ~2%, si inicializabamos los sesgos en "
+                    "logit(frecuencia) las salidas colapsaban en ~0.02, ninguna cruzaba "
+                    "el umbral y el fitness quedaba PLANO en 0: el AG no tenia por donde "
+                    "mejorar.",
+        "solucion": "Inicializamos los sesgos en ~0 (las salidas arrancan repartidas) y "
+                    "medimos el fitness con el mejor umbral POR ETIQUETA, que premia "
+                    "cualquier mejora de ranking. Asi el paisaje de fitness es suave.",
+        "conv": "Diseniar la funcion de fitness fue tan importante como el algoritmo.",
+        "archivo": "train_ga.py, init_population()",
     },
     {
-        "cat": "rigor", "etiqueta": "Ruido en lo que predecimos",
-        "problema": "FAERS mete dentro de las reacciones cosas que no son efectos del "
-                    "farmaco, como errores de dosis o el embarazo. Por eso al principio "
-                    "el modelo llego a predecir 'exposicion materna en el embarazo' para "
-                    "un hombre de 72 anios.",
-        "solucion": "Hicimos una lista de terminos a excluir y ademas pedimos una "
-                    "frecuencia minima, de modo que solo quedan efectos adversos reales "
-                    "y bien representados.",
-        "conv": "Fue una decision de dominio: curamos a mano lo que el modelo tiene que "
-                "aprender en vez de confiar ciegamente en los datos.",
+        "cat": "evolutivo", "etiqueta": "Seleccion por torneo, no ruleta",
+        "problema": "La ruleta sufre con superindividuos (uno muy apto acapara la "
+                    "reproduccion -> convergencia prematura) y es sensible a la escala "
+                    "del fitness.",
+        "solucion": "Usamos seleccion por torneo (k=3): presion de seleccion controlada e "
+                    "invariante a la escala. Monitoreamos SelPres = MaxFit/AveFit.",
+        "conv": "Presion de seleccion moderada para no perder diversidad temprano.",
+        "archivo": "train_ga.py, tournament_select()",
+    },
+    {
+        "cat": "evolutivo", "etiqueta": "Diversidad y convergencia prematura",
+        "problema": "En poblaciones finitas la diversidad se pierde y la busqueda se "
+                    "estanca en un optimo local.",
+        "solucion": "Elitismo moderado (solo 2 elites), mutacion gaussiana que reinyecta "
+                    "variacion, y registro de la diversidad (desvio del fitness) por "
+                    "generacion para vigilarla.",
+        "conv": "El elitismo garantiza no empeorar; la mutacion garantiza seguir explorando.",
+        "archivo": "train_ga.py -> outputs/ga_evolution.csv",
+    },
+    {
+        "cat": "evolutivo", "etiqueta": "Control de parametros (exploracion->explotacion)",
+        "problema": "Conviene explorar mucho al principio y afinar al final, pero un sigma "
+                    "fijo no logra las dos cosas.",
+        "solucion": "Control deterministico (Modulo 5): la sigma de la mutacion decrece de "
+                    "0.20 a 0.02 a lo largo de las generaciones.",
+        "conv": "Schedule simple y predecible, facil de defender.",
+        "archivo": "config.py, train_ga.py",
+    },
+    {
+        "cat": "evolutivo", "etiqueta": "Precision vs recall en conflicto",
+        "problema": "Un unico F1 esconde que mejorar la precision empeora el recall y "
+                    "viceversa.",
+        "solucion": "NSGA-II (Modulo 7) evoluciona el frente de Pareto completo: muchas "
+                    "soluciones no dominadas con distintos balances precision/recall.",
+        "conv": "Mostramos el compromiso entero, no un solo punto elegido a dedo.",
+        "archivo": "train_ga_nsga2.py",
+    },
+    {
+        "cat": "evolutivo", "etiqueta": "Modelo chico = explicable",
+        "problema": "Queriamos poder defender QUE aprende el modelo, no solo su numero.",
+        "solucion": "Al evolucionar una red chica, sus pesos son inspeccionables: derivamos "
+                    "la importancia de cada feature propagando |W1| por |W2| (XAI, Modulo 9).",
+        "conv": "La explicabilidad sale del propio individuo evolucionado.",
+        "archivo": "ga_explain.py",
+    },
+    {
+        "cat": "dato", "etiqueta": "TF-IDF como soporte, no como aporte",
+        "problema": "Necesitabamos convertir el texto del paciente en numeros para la red, "
+                    "sin que la codificacion se volviera el centro del proyecto.",
+        "solucion": "Usamos TF-IDF como codificacion inicial MINIMA (150 terminos) sobre el "
+                    "mismo texto canonico del paciente. Es soporte tecnico; lo que se "
+                    "defiende es el AG que optimiza sobre ese vector.",
+        "conv": "Si hiciera falta, el cromosoma binario de seleccion de features lo "
+                "reemplaza/justifica.",
+        "archivo": "ga_features.py",
+    },
+    {
+        "cat": "rigor", "etiqueta": "Ruido en las etiquetas (constraints)",
+        "problema": "FAERS mezcla en las reacciones cosas que no son efectos del farmaco "
+                    "(errores de dosis, embarazo): el modelo aprendia ruido.",
+        "solucion": "Restricciones de dominio: lista de terminos a excluir + frecuencia "
+                    "minima. Asi el objetivo del AG queda bien definido.",
+        "conv": "Curar el objetivo es parte del diseno del problema de optimizacion.",
         "archivo": "labels.py, build_label_vocab()",
     },
     {
-        "cat": "rigor", "etiqueta": "Filtrado de informacion",
-        "problema": "Si calculabamos cosas como el TF-IDF o la mediana de edad usando "
-                    "todo el dataset, el modelo terminaba 'viendo' datos de test al "
-                    "entrenar y las metricas salian mejores de lo que en realidad eran.",
-        "solucion": "Separamos test primero y recien despues ajustamos cualquier "
-                    "transformacion, siempre usando solo los datos de entrenamiento.",
-        "conv": "La regla que seguimos: nada que dependa de los datos se calcula antes "
-                "de apartar el conjunto de test.",
-        "archivo": "prepare_features.py",
-    },
-    {
-        "cat": "rigor", "etiqueta": "Que entrenar e inferir coincidan",
-        "problema": "Si entrenabamos con un formato de texto y la app armaba otro "
-                    "parecido pero distinto, el modelo recibia en produccion algo que "
-                    "nunca habia visto.",
-        "solucion": "Dejamos una sola funcion encargada de armar la frase del paciente, "
-                    "y la importan por igual el entrenamiento, la evaluacion y la app.",
-        "conv": "Es el principio de no repetirse: una unica definicion del dato de "
-                "entrada, sin copiar y pegar en cada script.",
-        "archivo": "patient_text.py",
-    },
-    {
-        "cat": "modelo", "etiqueta": "Muchos mas 'no' que 'si'",
-        "problema": "Apenas el 2% de los casos es positivo. Cuando le dimos mucho peso a "
-                    "los positivos para compensar, el modelo se fue al otro extremo y "
-                    "empezo a decir 'si' a casi todo.",
-        "solucion": "Le dimos mas peso a las clases raras pero con un tope, porque sin "
-                    "limite ese peso se disparaba y desestabilizaba el entrenamiento.",
-        "conv": "Atajo comodo: un unico numero controla el equilibrio entre detectar "
-                "mas y equivocarse menos.",
-        "archivo": "train.py, config.POS_WEIGHT_CAP",
-    },
-    {
-        "cat": "modelo", "etiqueta": "El corte en 0.5 no servia",
-        "problema": "Con las clases tan desbalanceadas, decidir siempre en 0.5 daba un "
-                    "F1 muy pobre, porque cada efecto tiene una probabilidad tipica "
-                    "diferente.",
-        "solucion": "Buscamos el punto de corte ideal para cada efecto por separado y lo "
-                    "guardamos junto al modelo para reutilizarlo despues.",
-        "conv": "Terminamos con 98 umbrales, uno por efecto, en lugar de un solo 0.5 "
-                "para todos.",
-        "archivo": "train.py / tune_threshold.py",
-    },
-    {
-        "cat": "modelo", "etiqueta": "Nombres que no coincidian",
-        "problema": "FAERS escribe 'METFORMIN HYDROCHLORIDE' y SIDER guarda 'metformin'. "
-                    "Por culpa de esos sufijos de sales, el cruce entre las dos bases "
-                    "fallaba todo el tiempo.",
-        "solucion": "Probamos primero el nombre completo y, si no aparecia, ibamos "
-                    "sacando sufijos de sales conocidos hasta dar con el ingrediente base.",
-        "conv": "Fue una solucion pragmatica: una lista corta de sufijos cubre la "
-                "mayoria de los casos sin armar un normalizador complicado.",
-        "archivo": "app.py, map_drug_to_sider()",
-    },
-    {
-        "cat": "ingenieria", "etiqueta": "No depender de una corrida perfecta",
-        "problema": "El fine-tuning lleva su tiempo, y si se cortaba la luz o cerrabamos "
-                    "la maquina a mitad de camino perdiamos horas de entrenamiento.",
-        "solucion": "Hicimos el entrenamiento reanudable por tandas: guarda su progreso "
-                    "despues de cada epoca, de forma segura, y al volver a correrlo "
-                    "sigue donde habia quedado.",
-        "conv": "En la practica se corre por partes, y si los datos cambiaron lo detecta "
-                "y arranca de nuevo en vez de mezclar cosas.",
-        "archivo": "train.py, atomic_save()",
+        "cat": "rigor", "etiqueta": "Sin fuga de informacion",
+        "problema": "Si la codificacion (TF-IDF, medianas) miraba todo el dataset, el "
+                    "modelo 'veia' test al entrenar.",
+        "solucion": "El featurizer se ajusta SOLO sobre train; el split 70/30 es "
+                    "determinista (semilla 42) y compartido por la app, la evaluacion y "
+                    "SIDER.",
+        "conv": "Mismo split en todo el proyecto -> los casos de test son siempre los mismos.",
+        "archivo": "ga_features.py, data_split.py",
     },
 ]
 
@@ -359,9 +376,9 @@ def decisions_html(items=DECISIONS):
     font-size: 11px; background: #eaf2f8; color: #2471a3;
     padding: 1px 6px; border-radius: 4px;
   }}
-  .cat-datos      {{ border-top-color: #3498db; }}
+  .cat-evolutivo  {{ border-top-color: #e74c3c; }}
+  .cat-dato       {{ border-top-color: #3498db; }}
   .cat-rigor      {{ border-top-color: #16a085; }}
-  .cat-modelo     {{ border-top-color: #8e44ad; }}
   .cat-ingenieria {{ border-top-color: #e67e22; }}
 </style>
 """
@@ -421,7 +438,7 @@ def pipeline_html(stages=STAGES):
   .stage[data-idx="0"] .connector {{ display: none; }}
   .connector::after {{
     content: ""; position: absolute; top: 0; left: -40%; width: 40%; height: 100%;
-    background: linear-gradient(90deg, transparent, #3498db, transparent);
+    background: linear-gradient(90deg, transparent, #e74c3c, transparent);
     animation: flow 2.4s linear infinite;
   }}
   @keyframes flow {{ from {{ left: -40%; }} to {{ left: 100%; }} }}
@@ -437,15 +454,15 @@ def pipeline_html(stages=STAGES):
     transition: color .35s ease; padding: 0 3px;
   }}
   .stage.active .node {{
-    border-color: #3498db; box-shadow: 0 0 0 6px rgba(52,152,219,.15);
+    border-color: #e74c3c; box-shadow: 0 0 0 6px rgba(231,76,60,.15);
     transform: scale(1.12);
   }}
-  .stage.active .num {{ color: #3498db; }}
+  .stage.active .num {{ color: #e74c3c; }}
   .stage.active .label {{ color: #2c3e50; font-weight: 600; }}
 
   .detail {{
     margin: 16px auto 0; max-width: 820px; background: #f7fafc;
-    border: 1px solid #e1e8ef; border-left: 5px solid #3498db;
+    border: 1px solid #e1e8ef; border-left: 5px solid #e74c3c;
     border-radius: 10px; padding: 14px 18px; animation: fade .4s ease;
   }}
   @keyframes fade {{ from {{ opacity: 0; transform: translateY(6px); }} to {{ opacity: 1; }} }}
@@ -471,7 +488,7 @@ def pipeline_html(stages=STAGES):
   .box.raw   {{ background: #f4f6f7; border-color: #d5dbdb; color: #566573; }}
   .box.proc  {{ background: #fef9e7; border-color: #f7dc6f; color: #7d6608; }}
   .box.out   {{ background: #eafaf1; border-color: #82e0aa; color: #1e7d4f; }}
-  .box.model {{ background: #eaf2f8; border-color: #85c1e9; color: #21618c; }}
+  .box.model {{ background: #fdecea; border-color: #f1948a; color: #a93226; }}
   .arr {{ display: flex; align-items: center; color: #aeb6bf; font-size: 18px; }}
   .fnote {{ font-size: 11.5px; color: #7f8c8d; margin-top: 8px; font-style: italic; }}
 
@@ -514,6 +531,6 @@ def pipeline_html(stages=STAGES):
   }});
 
   show(0);
-  setInterval(step, 5000);             // avanza solo cada 5s (mas tiempo para leer el ejemplo)
+  setInterval(step, 5000);             // avanza solo cada 5s
 </script>
 """
