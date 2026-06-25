@@ -1,18 +1,4 @@
-# Datos crudos (se descargan de FAERS / SIDER; no se suben al repo)
-data/raw/
-data/data/raw/
 
-# Archivos procesados pesados (se regeneran con el pipeline)
-data/processed/X_biobert.csv
-data/processed/X.csv
-data/processed/Y.csv
-data/processed/dataset.csv
-data/processed/label_names.txt
-data/processed/mlb_drug.pkl
-data/processed/tfidf.pkl
-data/processed/train_idx.npy
-data/processed/test_idx.npy
-data/processed/ner_results.csv
 
 # Modelos entrenados (superan 100 MB, no se suben a GitHub)
 models/
