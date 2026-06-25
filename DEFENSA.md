@@ -131,3 +131,57 @@ paciente→vector (el análogo de `patient_text.py` para el AG).
 `RANDOM_SEED = 42` en `config.py` fija: el split 70/30, el subconjunto de fitness y
 el generador del AG (`numpy.random.default_rng(42)`). Dos corridas dan el mismo
 resultado.
+
+---
+
+## 6. Qué es Computación Evolutiva y qué es soporte (clave para la defensa)
+
+Si el tribunal pregunta *"¿esto no es un proyecto de Minería de Datos?"*, la
+respuesta es clara:
+
+**El núcleo ES Computación Evolutiva:**
+- El **genotipo real** (6.170 pesos) y su **fenotipo** (la red) — `ga_model.py`.
+- La **función de fitness** (F1-macro con umbral por etiqueta) — `train_ga.py`.
+- Los **operadores** (torneo, cruce, mutación gaussiana, elitismo) — `train_ga.py`.
+- El **control de parámetros** (σ decreciente), las **métricas de convergencia**
+  (best/mean, diversidad, presión de selección), el **multi-objetivo NSGA-II**, el
+  **genotipo binario** de selección de features y la **explicabilidad** del individuo.
+
+**Lo demás es soporte técnico, no la contribución:**
+- FAERS y su limpieza dan el *problema* a optimizar.
+- TF-IDF es una **codificación inicial mínima** del texto (154 números) para tener
+  un vector de entrada chico; ni siquiera es fija: `ga_feature_select.py` deja que
+  un AG **decida qué features usar**.
+- Naive Bayes, KNN, Random Forest, BioBERT y el NER son **baseline histórico**: están
+  para contrastar contra otra metodología, marcados como tal en la app y el README.
+
+**Dos tipos de genotipo (lo van a valorar):**
+- **Real** (Módulo 3): los pesos de la red — operadores reales (cruce aritmético,
+  mutación gaussiana).
+- **Binario** (Módulo 2/3): la máscara de features — operadores canónicos (cruce
+  uniforme, mutación bit-flip). Resultado: eligió **59 de 154 features** y mejoró el
+  F1 (0.133 vs 0.124 con todas). Es el ejemplo de libro de "el AG decide qué importa".
+
+---
+
+## 7. Qué cambió en el reenfoque (de Minería de Datos a Computación Evolutiva)
+
+Partimos de `farmApp` (proyecto de Minería de Texto: BioBERT/RF/NER). Para
+`farmApp-TCE` el reenfoque fue:
+
+1. **Reemplazamos el entrenamiento** por un AG que evoluciona los pesos (no backprop).
+2. **Reescribimos la narrativa de la app** (pestaña "Cómo lo hicimos") para contar la
+   historia evolutiva: genotipo/fenotipo, fitness, operadores, convergencia.
+3. **Degradamos a "baseline histórico"** todo lo de la otra materia (RF, BioBERT,
+   NER, validación cruzada, curva de aprendizaje): siguen disponibles para contraste
+   pero etiquetados como tales, no como aporte.
+4. **Agregamos componentes evolutivos** que cubren más módulos: NSGA-II (Módulo 7),
+   XAI evolutivo (Módulo 9) y selección de features binaria (Módulo 2/3).
+5. **Justificamos el TF-IDF** como codificación mínima de soporte, y mostramos su
+   alternativa evolutiva (selección binaria).
+
+**Cómo defenderlo en una frase:** *"El dato y su codificación son el medio; la
+contribución es resolver el problema con Computación Evolutiva — evolucionamos los
+pesos de un clasificador (genotipo real), seleccionamos sus features (genotipo
+binario), optimizamos múltiples objetivos (NSGA-II) y explicamos el individuo
+resultante (XAI), midiendo convergencia, diversidad y presión de selección."*

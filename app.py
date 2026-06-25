@@ -17,7 +17,7 @@ sys.path.insert(0, str(ROOT / "src"))
 from ga_model import load_ga_model
 from patient_text import build_patient_text
 from translations import translate_effect
-from pipeline_story import pipeline_html, decisions_html
+from pipeline_story import pipeline_html
 
 DATA_DIR = ROOT / "data" / "processed"
 
@@ -176,16 +176,6 @@ with tab_story:
         "Cada etapa de arriba se corresponde con un modulo real de `src/`. "
         "La animacion avanza sola; pasa el mouse por una etapa para detenerte en ella."
     )
-
-    st.markdown("---")
-    st.subheader("Decisiones de diseno evolutivo")
-    st.markdown(
-        "El por que de cada decision del Algoritmo Genetico (representacion, fitness, "
-        "operadores, diversidad, control de parametros, multi-objetivo, explicabilidad). "
-        "El color del borde indica el tipo: **evolutivo** (rojo), **datos** (azul), "
-        "**rigor metodologico** (verde)."
-    )
-    components.html(decisions_html(), height=900, scrolling=True)
 
 # ── Sidebar: mismos atributos con los que se entreno el modelo ────────────────
 st.sidebar.header("Datos del paciente")
@@ -547,135 +537,42 @@ with tab_analysis:
         "El F1 absoluto bajo es inherente al problema (98 etiquetas, densidad ~2%) y "
         "comun a todos los modelos.")
 
-    # ── Seccion 2: Validacion cruzada ─────────────────────────────────────────
-    st.markdown("---")
-    st.subheader("Anexo historico · Validacion cruzada (5-Fold) — Random Forest")
-    st.caption("Baseline de Mineria de Texto, fuera del foco de Computacion Evolutiva. "
-               "Se conserva solo como referencia.")
-    cv_folds = [1, 2, 3, 4, 5]
-    cv_f1 = [0.0323, 0.0416, 0.0368, 0.0328, 0.0317]
-    cv_mean = 0.0350
-    colc1, colc2 = st.columns([1, 2])
-    with colc1:
-        st.dataframe(pd.DataFrame({"Fold": cv_folds, "F1 macro": cv_f1}),
-                     use_container_width=True, hide_index=True)
-    with colc2:
-        fig_cv = go.Figure(go.Bar(
-            x=[f"Fold {f}" for f in cv_folds], y=cv_f1, marker_color="#3498db",
-            text=[f"{v:.4f}" for v in cv_f1], textposition="outside"))
-        fig_cv.add_hline(y=cv_mean, line_dash="dash", line_color="red",
-                         annotation_text=f"Media={cv_mean:.4f}")
-        fig_cv.update_layout(height=320, yaxis_title="F1 macro",
-                             margin=dict(l=0, r=0, t=20, b=0), showlegend=False)
-        st.plotly_chart(fig_cv, use_container_width=True)
-    st.info(
-        "La validacion cruzada con 5 pliegues da un F1 macro promedio de 0.035 ± 0.004. "
-        "La baja varianza entre folds indica que el modelo es estable, aunque el "
-        "rendimiento absoluto es limitado por el desbalance de clases. Esto justifica "
-        "el uso de modelos mas sofisticados como BioBERT.")
-
-    # ── Seccion 3: Curva de aprendizaje ───────────────────────────────────────
-    st.markdown("---")
-    st.subheader("Anexo historico · Curva de aprendizaje (Random Forest)")
-    st.caption("Baseline de Mineria de Texto, fuera del foco de Computacion Evolutiva.")
-    lc_png = ROOT / "outputs" / "figures" / "learning_curve_rf.png"
-    n_samples = [500, 1000, 2000, 3000, 3692]
-    train_f1 = [0.7303, 0.5597, 0.4439, 0.3803, 0.3563]
-    test_f1  = [0.0232, 0.0287, 0.0306, 0.0308, 0.0322]
-    fig_lc = go.Figure()
-    fig_lc.add_trace(go.Scatter(x=n_samples, y=train_f1, mode="lines+markers",
-                                name="F1 entrenamiento", line=dict(color="#3498db")))
-    fig_lc.add_trace(go.Scatter(x=n_samples, y=test_f1, mode="lines+markers",
-                                name="F1 test", line=dict(color="#e74c3c")))
-    fig_lc.update_layout(height=380, xaxis_title="Cantidad de muestras de entrenamiento",
-                         yaxis_title="F1 macro", margin=dict(l=0, r=0, t=20, b=0))
-    st.plotly_chart(fig_lc, use_container_width=True)
-    if lc_png.exists():
-        with st.expander("Ver imagen generada por el script (learning_curve_rf.png)"):
-            st.image(str(lc_png), use_container_width=True)
-    st.info(
-        "La curva de aprendizaje muestra un gap significativo entre el F1 en "
-        "entrenamiento (0.356) y en test (0.032), lo que indica overfitting. El modelo "
-        "memoriza los datos de entrenamiento pero no generaliza bien. Con mas datos el "
-        "gap se reduce pero sigue siendo grande. Esto es esperable en Random Forest con "
-        "97 etiquetas y pocas muestras por clase, y es otra razon para usar BioBERT que "
-        "generaliza mejor gracias al pre-entrenamiento en texto biomedico.")
-
-    # ── Seccion 4: Desbalance de clases ───────────────────────────────────────
+    # ── Seccion 2: Desbalance de clases (condiciona el fitness del AG) ────────
     st.markdown("---")
     st.subheader("2 · Desbalance de clases (condiciona el fitness del AG)")
-    y_path = DATA_DIR / "Y.csv"
-    if not y_path.exists():
-        st.warning("No se encontro data/processed/Y.csv para mostrar la distribucion.")
-    else:
-        Y = pd.read_csv(y_path)
-        label_counts = Y.sum().sort_values(ascending=False)
-        top15 = label_counts.head(15)
-        bottom15 = label_counts.tail(15)
-        cold1, cold2 = st.columns(2)
-        with cold1:
-            fig_t = go.Figure(go.Bar(
-                x=top15.values[::-1],
-                y=[translate_effect(l) for l in top15.index[::-1]],
-                orientation="h", marker_color="#2ecc71"))
-            fig_t.update_layout(height=420, title="Top 15 mas frecuentes",
-                                margin=dict(l=0, r=0, t=30, b=0))
-            st.plotly_chart(fig_t, use_container_width=True)
-        with cold2:
-            fig_b = go.Figure(go.Bar(
-                x=bottom15.values[::-1],
-                y=[translate_effect(l) for l in bottom15.index[::-1]],
-                orientation="h", marker_color="#e67e22"))
-            fig_b.update_layout(height=420, title="15 menos frecuentes",
-                                margin=dict(l=0, r=0, t=30, b=0))
-            st.plotly_chart(fig_b, use_container_width=True)
+    from data_split import load_split as _load_split
+    _df, _labels, _, _ = _load_split()
+    counts = {}
+    for reacs in _df["reaction_list"]:
+        for r in reacs:
+            counts[r] = counts.get(r, 0) + 1
+    label_counts = pd.Series(counts).sort_values(ascending=False)
+    top15, bottom15 = label_counts.head(15), label_counts.tail(15)
+    cold1, cold2 = st.columns(2)
+    with cold1:
+        fig_t = go.Figure(go.Bar(
+            x=top15.values[::-1],
+            y=[translate_effect(l) for l in top15.index[::-1]],
+            orientation="h", marker_color="#2ecc71"))
+        fig_t.update_layout(height=420, title="Top 15 mas frecuentes",
+                            margin=dict(l=0, r=0, t=30, b=0))
+        st.plotly_chart(fig_t, use_container_width=True)
+    with cold2:
+        fig_b = go.Figure(go.Bar(
+            x=bottom15.values[::-1],
+            y=[translate_effect(l) for l in bottom15.index[::-1]],
+            orientation="h", marker_color="#e67e22"))
+        fig_b.update_layout(height=420, title="15 menos frecuentes",
+                            margin=dict(l=0, r=0, t=30, b=0))
+        st.plotly_chart(fig_b, use_container_width=True)
     st.info(
         "El dataset presenta un desbalance severo: las etiquetas mas frecuentes superan "
         "los 200 casos mientras que las menos frecuentes apenas llegan a 50. Esto "
         "**condiciona el diseno del fitness** del AG: medir F1-macro con un umbral por "
         "etiqueta (en vez de accuracy o un umbral global de 0.5) es lo que le da al "
-        "Algoritmo Genetico una senal util para optimizar pese al desbalance. Sigue "
-        "siendo el principal desafio del problema.")
+        "Algoritmo Genetico una senal util para optimizar pese al desbalance.")
 
-    # ── Seccion 5: NER ────────────────────────────────────────────────────────
-    st.markdown("---")
-    st.subheader("Anexo historico · NER — Extraccion de entidades (Mineria de Texto)")
-    st.caption("Modulo de Mineria de Texto, fuera del foco de Computacion Evolutiva. "
-               "Se conserva solo como referencia.")
-    ner_summary_path = ROOT / "outputs" / "ner_summary.json"
-    ner_csv_path = ROOT / "outputs" / "ner_entities.csv"
-    if not ner_summary_path.exists():
-        st.warning("No se encontro outputs/ner_summary.json. Generarlo con: "
-                   "venv\\Scripts\\python.exe src\\ner_demo.py")
-    else:
-        with open(ner_summary_path, encoding="utf-8") as f:
-            ner = json.load(f)
-        m1, m2, m3 = st.columns(3)
-        m1.metric("Indicaciones procesadas", ner.get("indicaciones_procesadas", "—"))
-        m2.metric("Entidades encontradas", ner.get("entidades_totales", "—"))
-        m3.metric("Entidades unicas", ner.get("entidades_unicas", "—"))
-        st.caption(f"Modelo NER: {ner.get('modelo', '—')}")
-
-        top = ner.get("top_20", {})
-        if top:
-            fig_ner = go.Figure(go.Bar(
-                x=list(top.values())[::-1], y=list(top.keys())[::-1],
-                orientation="h", marker_color="#9b59b6"))
-            fig_ner.update_layout(height=480, title="Top 20 entidades mas frecuentes",
-                                  margin=dict(l=0, r=0, t=30, b=0))
-            st.plotly_chart(fig_ner, use_container_width=True)
-
-        if ner_csv_path.exists():
-            with st.expander("Ejemplos de entidades extraidas (primeras 20)"):
-                st.dataframe(pd.read_csv(ner_csv_path).head(20),
-                             use_container_width=True, hide_index=True)
-    st.info(
-        "Se aplico reconocimiento de entidades nombradas (NER) sobre 500 indicaciones "
-        "terapeuticas usando spaCy. Este modulo demuestra la capacidad de extraccion de "
-        "informacion del pipeline, complementando los campos estructurados de FAERS con "
-        "analisis de texto libre.")
-
-    # ── Seccion 6: Extras de Computacion Evolutiva (Modulos 7 y 9) ────────────
+    # ── Seccion 3: Extras de Computacion Evolutiva (Modulos 7 y 9) ────────────
     st.markdown("---")
     st.subheader("3 · Analisis evolutivo avanzado (XAI + NSGA-II)")
 

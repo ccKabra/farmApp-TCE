@@ -70,16 +70,20 @@ TFIDF_MIN_DF       = 5      # frecuencia documental minima de un termino
 GA_HIDDEN = 24             # neuronas en la capa oculta (ReLU); salida = sigmoide
 
 # ── Hiperparametros del Algoritmo Genetico ────────────────────────────────────
-GA_POP_SIZE      = 60      # tamanio de poblacion (PopSize)
-GA_GENERATIONS   = 80      # nro de generaciones (criterio de parada fijo)
+GA_POP_SIZE      = 80      # tamanio de poblacion (PopSize)
+GA_GENERATIONS   = 120     # nro de generaciones (criterio de parada fijo)
 GA_TOURNAMENT_K  = 3       # tamanio del torneo (presion de seleccion)
 GA_P_CROSSOVER   = 0.9     # probabilidad de cruce (pxover)
 GA_CROSSOVER     = "uniform"   # "uniform" | "one_point" | "arithmetic"
-GA_P_MUTATION    = 0.05    # probabilidad de mutacion POR GEN (pmut)
-GA_MUT_SIGMA     = 0.20    # desvio inicial de la mutacion gaussiana (sigma_0)
+GA_P_MUTATION    = 0.04    # probabilidad de mutacion POR GEN (pmut)
+GA_MUT_SIGMA     = 0.25    # desvio inicial de la mutacion gaussiana (sigma_0)
 GA_MUT_SIGMA_END = 0.02    # desvio final (control deterministico: sigma decrece, Modulo 5)
 GA_ELITISM       = 2       # nro de elites que pasan intactos (Modulo 2: elitismo)
 GA_INIT_SCALE    = 1.0     # escala de la inicializacion gaussiana de pesos
+# Control ADAPTATIVO (Modulo 5): cuando la diversidad cae demasiado, se reinyectan
+# inmigrantes aleatorios (random restart parcial) para escapar de optimos locales.
+GA_DIVERSITY_FLOOR = 0.0008  # umbral de std del fitness por debajo del cual se reinyecta
+GA_IMMIGRANTS      = 6       # nro de inmigrantes aleatorios en la reinyeccion
 
 # Conjunto de fitness: subconjunto de TRAIN para acelerar (None = usar todo train).
 GA_FIT_SUBSAMPLE = 5000

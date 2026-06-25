@@ -51,7 +51,8 @@ from config import (GA_MODELS_DIR, OUTPUTS_DIR, RANDOM_SEED, GA_HIDDEN,
                     GA_POP_SIZE, GA_GENERATIONS, GA_TOURNAMENT_K, GA_P_CROSSOVER,
                     GA_CROSSOVER, GA_P_MUTATION, GA_MUT_SIGMA, GA_MUT_SIGMA_END,
                     GA_ELITISM, GA_INIT_SCALE, GA_FIT_SUBSAMPLE,
-                    GA_VAL_FRACTION, TFIDF_MAX_FEATURES, TFIDF_MIN_DF)
+                    GA_VAL_FRACTION, TFIDF_MAX_FEATURES, TFIDF_MIN_DF,
+                    GA_DIVERSITY_FLOOR, GA_IMMIGRANTS)
 from data_split import load_split
 from ga_features import PatientFeaturizer
 from ga_model import GAClassifier
@@ -252,6 +253,15 @@ def main():
                 new_pop.append(mutate(c2, GA_P_MUTATION, sigma))
 
         pop = np.array(new_pop)
+
+        # Control ADAPTATIVO (Modulo 5): si la diversidad cayo bajo el piso,
+        # reemplazamos los peores GA_IMMIGRANTS por individuos aleatorios
+        # ("random immigrants"). Asi escapamos de optimos locales sin perder
+        # los elites (que ya quedaron arriba por el ordenamiento previo).
+        if diversity < GA_DIVERSITY_FLOOR and GA_IMMIGRANTS > 0:
+            immigrants = init_population(net, GA_IMMIGRANTS, GA_INIT_SCALE)
+            pop[-GA_IMMIGRANTS:] = immigrants
+
         fitness = np.array([fitness_of(ind) for ind in pop])
 
         gen_best = float(fitness.max())
