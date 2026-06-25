@@ -1,0 +1,36 @@
+{
+  "modelo": "en_core_web_sm (spaCy base — fallback)",
+  "campo_fuente": "indications",
+  "indicaciones_procesadas": 500,
+  "entidades_totales": 205,
+  "entidades_unicas": 198,
+  "tipos_entidades": {
+    "CARDINAL": 1,
+    "ORG": 104,
+    "PERSON": 75,
+    "GPE": 23,
+    "NORP": 2
+  },
+  "top_20": {
+    "Astrocytoma": 3,
+    "Versus Host": 2,
+    "Anaesthesia": 2,
+    "Angioimmunoblastic": 2,
+    "Aplasia": 2,
+    "Creatine Phosphokinase": 2,
+    "2": 1,
+    "5Q Minus Syndrome": 1,
+    "Abdominal Discomfort": 1,
+    "Abdominal Infection": 1,
+    "Abdominal Rigidity": 1,
+    "Abortion Induced": 1,
+    "Abscess Limb": 1,
+    "Abscess Neck": 1,
+    "Acanthamoeba Infection": 1,
+    "Acanthamoeba Keratitis": 1,
+    "Accelerated Hypertension": 1,
+    "Achromobacter Infection": 1,
+    "Acinar Cell Carcinoma Of Pancreas": 1,
+    "Blaschkoid Dermatitis": 1
+  }
+}

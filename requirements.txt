@@ -1,0 +1,29 @@
+# ── Nucleo del proyecto (Algoritmo Genetico) ────────────────────────────────
+# El clasificador evolucionado por AG corre SOLO con estas dependencias
+# (sin GPU, sin PyTorch): preprocess -> prepare_features -> train_ga -> app.
+pandas
+numpy
+scikit-learn
+scipy
+
+# Visualización
+matplotlib
+seaborn
+plotly
+networkx
+
+# App web
+streamlit
+
+# NLP general (el modelo en_core_web_sm se instala aparte:
+#   python -m spacy download en_core_web_sm)
+spacy
+
+# ── Opcional: SOLO para los baselines de comparacion heredados ────────────────
+# (Random Forest + BioBERT embeddings, BioBERT fine-tuning). NO hacen falta para
+# el modelo AG ni para la app. Instalar el wheel correcto para tu hardware:
+#   GPU (CUDA 12.4): pip install torch==2.6.0+cu124 --index-url https://download.pytorch.org/whl/cu124
+#   CPU solamente:   pip install torch
+# torch
+# transformers
+# accelerate

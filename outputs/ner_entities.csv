@@ -1,0 +1,206 @@
+texto_original,entidad,etiqueta,inicio,fin
+2-Hydroxyglutaric Aciduria,2,CARDINAL,0,1
+5Q Minus Syndrome,5Q Minus Syndrome,ORG,0,17
+Abdominal Discomfort,Abdominal Discomfort,PERSON,0,20
+Abdominal Infection,Abdominal Infection,ORG,0,19
+Abdominal Rigidity,Abdominal Rigidity,ORG,0,18
+Abortion Induced,Abortion Induced,ORG,0,16
+Abscess Limb,Abscess Limb,PERSON,0,12
+Abscess Neck,Abscess Neck,PERSON,0,12
+Acanthamoeba Infection,Acanthamoeba Infection,ORG,0,22
+Acanthamoeba Keratitis,Acanthamoeba Keratitis,PERSON,0,22
+Accelerated Hypertension,Accelerated Hypertension,ORG,0,24
+Achromobacter Infection,Achromobacter Infection,ORG,0,23
+Acinar Cell Carcinoma Of Pancreas,Acinar Cell Carcinoma Of Pancreas,PERSON,0,33
+Acquired Blaschkoid Dermatitis,Blaschkoid Dermatitis,PERSON,9,30
+Acquired C1 Inhibitor Deficiency,C1 Inhibitor,ORG,9,21
+Acquired Haemophilia,Haemophilia,GPE,9,20
+Acromegaly,Acromegaly,GPE,0,10
+Acth-Producing Pituitary Tumour,Acth-Producing,ORG,0,14
+Actinic Elastosis,Actinic Elastosis,ORG,0,17
+Actinic Keratosis,Actinic Keratosis,PERSON,0,17
+Acute Erythroid Leukaemia,Erythroid Leukaemia,PERSON,6,25
+Acute Graft Versus Host Disease,Versus Host,PERSON,12,23
+Acute Graft Versus Host Disease In Skin,Versus Host,PERSON,12,23
+Acute Hepatic Failure,Acute Hepatic Failure,ORG,0,21
+Acute Kidney Injury,Kidney Injury,PERSON,6,19
+Acute Myeloid Leukaemia (In Remission),Myeloid Leukaemia,PERSON,6,23
+Acute Myeloid Leukaemia Refractory,Leukaemia Refractory,PERSON,14,34
+Acute Myelomonocytic Leukaemia,Acute Myelomonocytic,ORG,0,20
+Acute Pulmonary Oedema,Pulmonary Oedema,PERSON,6,22
+Acute Respiratory Distress Syndrome,Acute Respiratory Distress,ORG,0,26
+Addison'S Disease,Addison'S,ORG,0,9
+Adenocarcinoma Gastric,Adenocarcinoma Gastric,PERSON,0,22
+Adrenal Gland Cancer,Adrenal Gland Cancer,ORG,0,20
+Adrenal Gland Cancer Metastatic,Adrenal Gland Cancer Metastatic,ORG,0,31
+Adrenocortical Carcinoma,Adrenocortical Carcinoma,ORG,0,24
+Adrenocortical Insufficiency Acute,Adrenocortical Insufficiency Acute,ORG,0,34
+Adrenogenital Syndrome,Adrenogenital Syndrome,ORG,0,22
+African Trypanosomiasis,African,NORP,0,7
+Age-Related Macular Degeneration,Age-Related Macular Degeneration,ORG,0,32
+Ageusia,Ageusia,PERSON,0,7
+Akathisia,Akathisia,GPE,0,9
+Akinesia,Akinesia,GPE,0,8
+Alagille Syndrome,Alagille Syndrome,ORG,0,17
+Alanine Aminotransferase Increased,Alanine Aminotransferase Increased,PERSON,0,34
+Albuminuria,Albuminuria,GPE,0,11
+Alcoholic Pancreatitis,Alcoholic Pancreatitis,PERSON,0,22
+Alkalinuria,Alkalinuria,GPE,0,11
+Allergic Respiratory Symptom,Allergic Respiratory Symptom,PERSON,0,28
+Allergic Sinusitis,Allergic,ORG,0,8
+Allogenic Stem Cell Transplantation,Allogenic Stem Cell Transplantation,ORG,0,35
+Alopecia Areata,Alopecia Areata,PERSON,0,15
+Alopecia Totalis,Alopecia Totalis,PERSON,0,16
+Alopecia Universalis,Alopecia Universalis,PERSON,0,20
+Alpha Haemolytic Streptococcal Infection,Alpha Haemolytic Streptococcal Infection,ORG,0,40
+Alpha-Mannosidosis,Alpha-Mannosidosis,ORG,0,18
+Alport'S Syndrome,Alport,GPE,0,6
+Alternaria Infection,Alternaria Infection,PERSON,0,20
+Alveolar Rhabdomyosarcoma,Alveolar,ORG,0,8
+Amino Acid Level Abnormal,Amino Acid Level Abnormal,ORG,0,25
+Amnesia,Amnesia,GPE,0,7
+Amoebic Dysentery,Amoebic Dysentery,ORG,0,17
+Amyotrophic Lateral Sclerosis,Amyotrophic Lateral Sclerosis,ORG,0,29
+Anaemia Of Malignant Disease,Anaemia Of Malignant Disease,ORG,0,28
+Anaesthesia,Anaesthesia,GPE,0,11
+Anaesthesia Eye,Anaesthesia Eye,ORG,0,15
+Anaesthesia Procedure,Anaesthesia,GPE,0,11
+Anaesthesia Reversal,Anaesthesia Reversal,PERSON,0,20
+Anal Abscess,Anal Abscess,PERSON,0,12
+Anal Incontinence,Anal Incontinence,PERSON,0,17
+Anaplastic Thyroid Cancer,Thyroid Cancer,PERSON,11,25
+Androgen Therapy,Androgen Therapy,PERSON,0,16
+Androgenetic Alopecia,Androgenetic Alopecia,ORG,0,21
+Angelman'S Syndrome,Angelman,ORG,0,8
+Angina Pectoris,Angina Pectoris,PERSON,0,15
+Angina Unstable,Angina Unstable,ORG,0,15
+Angiocentric Lymphoma,Angiocentric Lymphoma,PERSON,0,21
+Angiofibroma,Angiofibroma,GPE,0,12
+Angiogram Cerebral,Angiogram Cerebral,ORG,0,18
+Angioimmunoblastic T-Cell Lymphoma,Angioimmunoblastic,ORG,0,18
+Angioimmunoblastic T-Cell Lymphoma Stage Iii,Angioimmunoblastic,ORG,0,18
+Angiopathic Neuropathy,Angiopathic Neuropathy,PERSON,0,22
+Angiosarcoma,Angiosarcoma,GPE,0,12
+Anisocoria,Anisocoria,ORG,0,10
+Ankylosing Spondylitis,Ankylosing Spondylitis,PERSON,0,22
+Anorectal Varices,Anorectal,ORG,0,9
+Anorexia Nervosa,Anorexia Nervosa,PERSON,0,16
+Anti-Glomerular Basement Membrane Disease,Anti-Glomerular Basement Membrane Disease,ORG,0,41
+Anti-Infective Therapy,Anti-Infective Therapy,NORP,0,22
+Anti-Myelin-Associated Glycoprotein Associated Polyneuropathy,Anti-Myelin-Associated Glycoprotein Associated Polyneuropathy,PERSON,0,61
+Anti-Neuronal Antibody,Anti-Neuronal Antibody,ORG,0,22
+Anti-Neutrophil Cytoplasmic Antibody Positive Vasculitis,Anti-Neutrophil Cytoplasmic Antibody Positive Vasculitis,ORG,0,56
+Antiallergic Therapy,Antiallergic Therapy,PERSON,0,20
+Antibiotic Associated Colitis,Antibiotic Associated Colitis,ORG,0,29
+Antibiotic Level Above Therapeutic,Antibiotic Level Above Therapeutic,ORG,0,34
+Antidepressant Drug Level,Antidepressant Drug Level,ORG,0,25
+Antidepressant Therapy,Antidepressant Therapy,PERSON,0,22
+Antiemetic Supportive Care,Antiemetic Supportive Care,ORG,0,26
+Antifungal Prophylaxis,Antifungal Prophylaxis,PERSON,0,22
+Antifungal Treatment,Antifungal Treatment,PERSON,0,20
+Antineutrophil Cytoplasmic Antibody,Antineutrophil Cytoplasmic Antibody,PERSON,0,35
+Antineutrophil Cytoplasmic Antibody Decreased,Antineutrophil Cytoplasmic Antibody Decreased,PERSON,0,45
+Antinuclear Antibody Positive,Antinuclear Antibody Positive,ORG,0,29
+Antioxidant Therapy,Antioxidant Therapy,PERSON,0,19
+Antiphospholipid Antibodies,Antiphospholipid Antibodies,ORG,0,27
+Antipsychotic Drug Level Therapeutic,Antipsychotic Drug Level Therapeutic,ORG,0,36
+Antisynthetase Syndrome,Antisynthetase Syndrome,PERSON,0,23
+Antithrombin Iii Decreased,Antithrombin Iii Decreased,PERSON,0,26
+Anuria,Anuria,GPE,0,6
+Aortic Dissection,Aortic Dissection,ORG,0,17
+Aortic Occlusion,Aortic Occlusion,ORG,0,16
+Aortic Thrombosis,Aortic Thrombosis,ORG,0,17
+Aortic Valve Replacement,Aortic Valve Replacement,ORG,0,24
+Aplasia Pure Red Cell,Aplasia,PERSON,0,7
+Aplastic Anaemia,Aplastic Anaemia,ORG,0,16
+Appetite Disorder,Appetite Disorder,PERSON,0,17
+Arterial Angioplasty,Arterial Angioplasty,ORG,0,20
+Arteriogram Carotid,Arteriogram Carotid,PERSON,0,19
+Arthralgia,Arthralgia,GPE,0,10
+Arthropod Bite,Arthropod Bite,PERSON,0,14
+Arthropod Infestation,Arthropod Infestation,PERSON,0,21
+Arthropod Sting,Arthropod Sting,PERSON,0,15
+Artificial Menopause,Artificial Menopause,PERSON,0,20
+Asplenia,Asplenia,GPE,0,8
+Assisted Reproductive Technology,Assisted Reproductive Technology,ORG,0,32
+Asthenia,Asthenia,GPE,0,8
+Asthma Prophylaxis,Asthma Prophylaxis,PERSON,0,18
+Asthma-Chronic Obstructive Pulmonary Disease Overlap Syndrome,Asthma-Chronic Obstructive Pulmonary Disease Overlap Syndrome,ORG,0,61
+Astrocytoma,Astrocytoma,GPE,0,11
+Astrocytoma Malignant,Astrocytoma,GPE,0,11
+"Astrocytoma, Low Grade",Astrocytoma,GPE,0,11
+Asymptomatic Hiv Infection,Asymptomatic Hiv Infection,ORG,0,26
+Atopic Keratoconjunctivitis,Atopic Keratoconjunctivitis,PERSON,0,27
+Atrial Appendage Closure,Atrial Appendage Closure,ORG,0,24
+Atrial Fibrillation,Atrial Fibrillation,ORG,0,19
+Atrial Flutter,Atrial Flutter,ORG,0,14
+Atrial Tachycardia,Atrial Tachycardia,ORG,0,18
+Atrial Thrombosis,Atrial Thrombosis,ORG,0,17
+Atrophic Vulvovaginitis,Atrophic Vulvovaginitis,PERSON,0,23
+Atypical Mycobacterial Infection,Atypical Mycobacterial Infection,ORG,0,32
+Atypical Teratoid/Rhabdoid Tumour Of Cns,Teratoid/Rhabdoid Tumour Of Cns,ORG,9,40
+Autoimmune Thyroiditis,Autoimmune Thyroiditis,GPE,0,22
+Autologous Haematopoietic Stem Cell Transplant,Autologous Haematopoietic Stem Cell,ORG,0,35
+Autonomic Neuropathy,Autonomic Neuropathy,PERSON,0,20
+B Precursor Type Acute Leukaemia,B Precursor Type Acute,ORG,0,22
+B-Cell Aplasia,Aplasia,PERSON,7,14
+B-Cell Lymphoma Refractory,B-Cell Lymphoma Refractory,ORG,0,26
+B-Cell Prolymphocytic Leukaemia,B-Cell Prolymphocytic,ORG,0,21
+B-Cell Type Acute Leukaemia,B-Cell Type Acute,ORG,0,17
+B-Lymphocyte Abnormalities,B-Lymphocyte Abnormalities,ORG,0,26
+B-Lymphocyte Count Decreased,B-Lymphocyte Count Decreased,ORG,0,28
+Babesiosis,Babesiosis,GPE,0,10
+Bacterial Disease Carrier,Bacterial Disease Carrier,ORG,0,25
+Bacterial Infection,Bacterial Infection,ORG,0,19
+Barrett'S Oesophagus,Barrett'S,PERSON,0,9
+Bartholin'S Abscess,Bartholin'S Abscess,PERSON,0,19
+Behaviour Disorder,Behaviour Disorder,PERSON,0,18
+Behcet'S Syndrome,Behcet'S,ORG,0,8
+Bell'S Palsy,Bell'S Palsy,ORG,0,12
+Benign Lung Neoplasm,Benign Lung Neoplasm,PERSON,0,20
+Bicuspid Aortic Valve,Bicuspid Aortic Valve,ORG,0,21
+Bile Duct Cancer,Bile Duct Cancer,ORG,0,16
+Bile Duct Cancer Stage Ii,Bile Duct Cancer Stage Ii,ORG,0,25
+Bile Duct Cancer Stage Iv,Bile Duct Cancer Stage Iv,ORG,0,25
+Biliary Colic,Biliary Colic,PERSON,0,13
+Biliary Obstruction,Biliary Obstruction,ORG,0,19
+Biopsy Prostate,Biopsy Prostate,ORG,0,15
+Bipolar Disorder,Bipolar Disorder,PERSON,0,16
+Bladder Cancer,Bladder Cancer,ORG,0,14
+Bladder Catheterisation,Bladder Catheterisation,ORG,0,23
+Bladder Discomfort,Bladder Discomfort,PERSON,0,18
+Bladder Disorder,Bladder Disorder,PERSON,0,16
+Bladder Dysfunction,Bladder Dysfunction,ORG,0,19
+Bladder Pain,Bladder Pain,PERSON,0,12
+Bladder Spasm,Bladder,ORG,0,7
+Blastic Plasmacytoid Dendritic Cell Neoplasia,Blastic Plasmacytoid Dendritic,ORG,0,30
+Blastic Plasmacytoid Dendritic Cell Neoplasia,Neoplasia,GPE,36,45
+Blau Syndrome,Blau Syndrome,PERSON,0,13
+Blindness Unilateral,Blindness Unilateral,ORG,0,20
+Blood Bilirubin Abnormal,Blood Bilirubin Abnormal,ORG,0,24
+Blood Calcium Abnormal,Blood Calcium Abnormal,ORG,0,22
+Blood Cholesterol Abnormal,Cholesterol Abnormal,PERSON,6,26
+Blood Cholesterol Decreased,Cholesterol Decreased,PERSON,6,27
+Blood Cholesterol Increased,Cholesterol Increased,PERSON,6,27
+Blood Creatine Phosphokinase Increased,Creatine Phosphokinase,PERSON,6,28
+Blood Creatine Phosphokinase Mb Increased,Creatine Phosphokinase,PERSON,6,28
+Blood Culture Positive,Blood Culture Positive,ORG,0,22
+Blood Glucose,Blood Glucose,PERSON,0,13
+Blood Glucose Abnormal,Glucose Abnormal,PERSON,6,22
+Blood Immunoglobulin A Decreased,Blood Immunoglobulin A Decreased,ORG,0,32
+Blood Immunoglobulin G Decreased,Blood Immunoglobulin G Decreased,PERSON,0,32
+Blood Immunoglobulin M Increased,Blood Immunoglobulin M Increased,ORG,0,32
+Blood Insulin Abnormal,Insulin Abnormal,PERSON,6,22
+Blood Insulin Increased,Insulin Increased,PERSON,6,23
+Blood Magnesium Decreased,Blood Magnesium Decreased,ORG,0,25
+Blood Potassium Abnormal,Blood Potassium Abnormal,ORG,0,24
+Blood Potassium Decreased,Blood Potassium Decreased,ORG,0,25
+Blood Pressure Abnormal,Blood Pressure Abnormal,ORG,0,23
+Blood Pressure Management,Blood Pressure Management,ORG,0,25
+Blood Pressure Systolic Decreased,Blood Pressure Systolic Decreased,ORG,0,33
+Blood Thyroid Stimulating Hormone Abnormal,Blood Thyroid Stimulating Hormone Abnormal,ORG,0,42
+Blood Thyroid Stimulating Hormone Increased,Blood Thyroid Stimulating Hormone,ORG,0,33
+Bowel Movement Irregularity,Bowel Movement Irregularity,ORG,0,27
+Bowel Preparation,Bowel Preparation,ORG,0,17
+Bradyarrhythmia,Bradyarrhythmia,ORG,0,15
+Bradycardia,Bradycardia,GPE,0,11
