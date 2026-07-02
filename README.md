@@ -7,7 +7,7 @@ Toma reportes reales de pacientes de **FDA FAERS** y predice, para un paciente
 dado, el conjunto de **efectos adversos** que podría sufrir (vocabulario de
 ~98 términos MedDRA). El clasificador es una red neuronal de una capa oculta
 **cuyos pesos NO se entrenan por retropropagación**: se **optimizan con un
-Algoritmo Genético** (genotipo de números reales, selección por torneo, cruce,
+Algoritmo Genético** (genotipo de números reales, selección por rank lineal, cruce,
 mutación gaussiana, elitismo, control adaptativo de parámetros).
 
 ```
@@ -21,7 +21,7 @@ mutación gaussiana, elitismo, control adaptativo de parámetros).
                             │
                   fitness = F1-macro (con umbral óptimo por etiqueta)
                             │
-   selección por torneo  →  cruce  →  mutación gaussiana  →  elitismo
+   selección por rank lineal  →  cruce  →  mutación gaussiana  →  elitismo
                   +  inmigrantes aleatorios si la diversidad cae
                             ↓
                        nueva generación
@@ -106,7 +106,7 @@ diseño del AG y subió el F1 de 0.073 a 0.100 (+37%).
 | Componente | Cómo | Módulo |
 |---|---|:---:|
 | Inicialización | Gaussiana He/Glorot escalada; sesgos ≈ 0 | 4 |
-| Selección | torneo `k=3` | 2 |
+| Selección | **rank lineal** `s=1.7` (presión constante) | 4 |
 | Cruce | uniforme con `pc=0.9` | 2 |
 | Mutación | gaussiana por gen, `pm=0.04` | 2 |
 | **Control determinístico** | `σ` decrece linealmente de 0.25 a 0.02 | 5 |
@@ -114,7 +114,7 @@ diseño del AG y subió el F1 de 0.073 a 0.100 (+37%).
 | Elitismo | `e=2` (los mejores pasan intactos) | 2 |
 | Fitness | F1-macro con **umbral óptimo por etiqueta** sobre un subset fijo de 5 000 casos de train | 4, 6 |
 | Métricas registradas | best/mean fitness, diversidad (std), presión de selección `MaxFit/AveFit`, σ | 6 |
-| Parada | 120 generaciones (criterio fijo) | 2 |
+| Parada | **300 generaciones** (elegido por experimento — ver más abajo) | 2 |
 
 ```bash
 python src/train_ga.py       # ~3 min, solo CPU/NumPy
@@ -193,7 +193,7 @@ streamlit run app.py
 
 | Modelo | F1 macro | F1 micro | F1 samples | Hamming loss |
 |--------|---------:|---------:|-----------:|-------------:|
-| **Algoritmo Genético (encoding categórico) — ESTE PROYECTO** | **0.0998** | **0.0662** | **0.0574** | **0.2302** |
+| **Algoritmo Genético (encoding categórico) — ESTE PROYECTO** | **0.1059** | **0.0728** | **0.0618** | **0.2012** |
 | Naive Bayes — *baseline histórico* | 0.0001 | 0.0006 | 0.0006 | 0.0217 |
 | KNN (k=5) — *baseline histórico* | 0.0006 | 0.0012 | 0.0006 | 0.0218 |
 | Random Forest + TF-IDF — *baseline histórico* | 0.107 | 0.104 | 0.105 | 0.245 |
@@ -278,7 +278,7 @@ Si alguien pregunta "*¿esto no es Minería de Datos?*":
   = red neuronal ([ga_model.py](src/ga_model.py)) + featurización de entrada
   como inyección de conocimiento ([ga_features.py](src/ga_features.py)).
 - **Función de fitness** — F1-macro con umbral óptimo por etiqueta.
-- **Operadores** — selección por torneo, cruce, mutación gaussiana, elitismo.
+- **Operadores** — selección por rank lineal (s=1.7), cruce uniforme, mutación gaussiana, elitismo.
 - **Control de parámetros** — determinístico (σ decreciente) **+** adaptativo
   (inmigrantes aleatorios si cae la diversidad).
 - **Métricas de convergencia** — best/mean fitness, diversidad, presión de
@@ -303,7 +303,7 @@ Si alguien pregunta "*¿esto no es Minería de Datos?*":
 | **Encoding categórico explícito (vs TF-IDF crudo)** | Cada fármaco/indicación tiene SU columna; el AG no tiene que "descubrir" significados. Subió F1 0.073 → 0.100. | 3 |
 | **Sesgos ≈ 0 en la inicialización** | Inicializar con `logit(prior)` aplanaba el fitness en 0 (densidad 2 %, nada cruzaba el umbral). | 4 |
 | **Fitness = F1-macro con umbral por etiqueta** | Un umbral global de 0.5 da señal plana; el umbral por etiqueta premia cualquier mejora de ranking. | 4 |
-| **Selección por torneo (no ruleta)** | La ruleta crea superindividuos y es sensible a la escala; el torneo da presión controlada. | 2 |
+| **Selección por rank lineal (s=1.7)** | Presión selectiva **constante** por diseño, independiente de la escala del fitness (Módulo 4) — clave cuando el fitness converge a un rango chico. | 4 |
 | **Elitismo + mutación** | Elitismo garantiza no empeorar; la mutación reinyecta variación. | 2 |
 | **Control determinístico de σ** | Explorar al inicio, explotar al final. | 5 |
 | **Inmigrantes aleatorios cuando cae la diversidad** | Escapar de óptimos locales sin perder los elites. | 5 |

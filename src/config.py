@@ -81,7 +81,7 @@ GA_MUT_SIGMA_END = 0.02    # desvio final (control deterministico: sigma decrece
 GA_ELITISM       = 2       # nro de elites que pasan intactos (Modulo 2: elitismo)
 GA_INIT_SCALE    = 1.0     # escala de la inicializacion gaussiana de pesos
 # ── Seleccion (Modulo 4) ──────────────────────────────────────────────────────
-GA_SELECTION      = "rank"   # "tournament" | "rank" (rank = presion constante, cf. ga_metrics)
+GA_SELECTION      = "rank"   # "tournament" | "rank"  — rank = presion selectiva CONSTANTE (Modulo 4)
 GA_RANK_S         = 1.7      # presion selectiva para rank lineal (1.0=neutra, 2.0=max)
 
 # ── Control ADAPTATIVO (Modulo 5) ─────────────────────────────────────────────

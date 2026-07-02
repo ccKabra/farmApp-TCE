@@ -11,7 +11,8 @@ Mapa a los modulos de la materia
     pesos de la red; el fenotipo es la red clasificadora. Inicializamos el sesgo
     de salida en logit(prior) de cada etiqueta -> "inyeccion de conocimiento"
     via la representacion (arranca cerca de la frecuencia base de cada clase).
-  * Seleccion / fitness (Modulo 2 y 4): seleccion por TORNEO; fitness = F1-macro.
+  * Seleccion / fitness (Modulo 4): seleccion por RANK lineal (s=1.7, presion
+    selectiva constante e independiente de la escala del fitness); fitness = F1-macro.
   * Operadores: cruce (uniforme / un punto / aritmetico) + mutacion GAUSSIANA.
   * Elitismo (Modulo 2): los mejores individuos pasan intactos -> garantiza que
     el mejor nunca empeora (unica garantia teorica de convergencia).

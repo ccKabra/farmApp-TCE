@@ -1,0 +1,7 @@
+{
+  "generations": 500,
+  "best_fitness_train": 0.13601744249941985,
+  "f1_macro_test": 0.10018588976396016,
+  "precision_macro": 0.10224654468620262,
+  "seconds": 689.0
+}

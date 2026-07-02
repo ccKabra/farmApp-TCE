@@ -60,7 +60,7 @@ Alzugaray Agustín Ezequiel · Lautaro Cabrera Tamalet
 │                            │                                 │
 │                            ▼                                 │
 │  5) ALGORITMO GENÉTICO ajusta los 7.946 pesos                │
-│     · selección por torneo                                   │
+│     · selección por rank lineal (s=1.7)                      │
 │     · cruce uniforme                                         │
 │     · mutación gaussiana                                     │
 │     · elitismo + inmigrantes aleatorios                      │
@@ -98,7 +98,7 @@ Alzugaray Agustín Ezequiel · Lautaro Cabrera Tamalet
 
 **Lo que se ve**:
 - La población **converge sin estancarse**.
-- La estructura del AG (torneo + cruce + mutación + elitismo + inmigrantes adaptativos) mantiene el balance exploración / explotación durante las 120 generaciones.
+- La estructura del AG (rank lineal + cruce + mutación + elitismo + inmigrantes adaptativos) mantiene el balance exploración / explotación durante las 300 generaciones.
 
 ---
 
@@ -192,12 +192,12 @@ Es lo que está en `train_ga.py` y produjo el modelo que se mostrará en la secc
 
 | Métrica | Valor |
 |---|---:|
-| **F1-macro (test)** | **0.0998** |
-| F1-micro | 0.0662 |
-| Precision macro | 0.1122 |
-| Recall macro | 0.3137 |
-| Hamming loss | 0.2302 |
-| Casos de test con ≥1 acierto | **51 %** (4.488 / 8.762) |
+| **F1-macro (test)** | **0.1059** |
+| F1-micro | 0.0728 |
+| Precision macro | 0.1111 |
+| Recall macro | 0.2910 |
+| Hamming loss | 0.2012 |
+| Casos de test con ≥1 acierto | **48,6 %** (4.257 / 8.762) |
 
 ### 🌐 Validación externa con SIDER 4.1
 
@@ -205,16 +205,16 @@ Es lo que está en `train_ga.py` y produjo el modelo que se mostrará en la secc
 
 | | |
 |---|---:|
-| F1 vs SIDER (fármacos mapeables) | **0.32** |
-| Precisión vs SIDER | 0.45 |
-| Recall vs SIDER | 0.28 |
+| F1 vs SIDER (fármacos mapeables) | **0.306** |
+| Precisión vs SIDER | 0.502 |
+| Recall vs SIDER | 0.249 |
 
 → El modelo predice efectos que **ya están documentados** por farmacólogos en una base independiente. Es la verificación más fuerte de que el AG aprendió algo real.
 
 ### ⏱️ Costo computacional
 | | |
 |---|---:|
-| Tiempo de entrenamiento | **3 minutos** |
+| Tiempo de entrenamiento | **7,15 minutos** (300 gen) |
 | Hardware | CPU (sin GPU, solo NumPy) |
 | Cromosoma | 7.946 pesos reales |
 
@@ -252,7 +252,7 @@ Es lo que está en `train_ga.py` y produjo el modelo que se mostrará en la secc
 |---|---|
 | **2** — Algoritmos Genéticos | Bucle completo SGA + elitismo |
 | **3** — Genotipos no binarios | Genotipo real (pesos) **+** binario (selección de features) |
-| **4** — Selección, fitness, constraints | Torneo, F1-macro con umbral por etiqueta, exclusión de no-ADRs |
+| **4** — Selección, fitness, constraints | Rank lineal (s=1.7, presión constante), F1-macro con umbral por etiqueta, exclusión de no-ADRs |
 | **5** — Parameter tuning and control | σ determinístico + inmigrantes adaptativos + experimentos de sweep |
 | **6** — Performance metrics (single-obj) | Best/mean fitness, diversidad, presión de selección por generación |
 | **7** — Multi-objective EAs | NSGA-II para precisión vs recall |

@@ -127,12 +127,12 @@ function card(slide, x, y, w, h, fill = C.card) {
     color: C.blue, valign: "middle", margin: 0,
   });
   s.addText([
-    { text: "Multi-label: un paciente puede tener varios efectos a la vez", options: { bullet: true, breakLine: true } },
-    { text: "98 efectos posibles del vocabulario MedDRA", options: { bullet: true, breakLine: true } },
-    { text: "Severamente desbalanceado: solo ~2 % de cada efecto es positivo", options: { bullet: true, breakLine: true } },
-    { text: "Texto clínico ruidoso y heterogéneo", options: { bullet: true } },
-  ], { x: 0.8, y: 3.7, w: 5.6, h: 3.0,
-       fontSize: 15, fontFace: "Calibri", color: C.textDk, paraSpaceAfter: 8 });
+    { text: "Multi-label", options: { bullet: true, bold: true, breakLine: true } },
+    { text: "98 efectos (MedDRA)", options: { bullet: true, bold: true, breakLine: true } },
+    { text: "Desbalanceado (~2 % positivos)", options: { bullet: true, bold: true, breakLine: true } },
+    { text: "Texto clínico ruidoso", options: { bullet: true, bold: true } },
+  ], { x: 0.8, y: 3.8, w: 5.6, h: 3.0,
+       fontSize: 18, fontFace: "Calibri", color: C.textDk, paraSpaceAfter: 18 });
 
   card(s, 6.7, 3.0, 6.1, 4.0);
   s.addText("Por qué es difícil y por qué importa", {
@@ -141,12 +141,12 @@ function card(slide, x, y, w, h, fill = C.card) {
     color: C.red, valign: "middle", margin: 0,
   });
   s.addText([
-    { text: "Un modelo que predice todo \"no\" tiene 98 % accuracy pero F1 ≈ 0", options: { bullet: true, breakLine: true } },
-    { text: "98 etiquetas con frecuencias muy distintas", options: { bullet: true, breakLine: true } },
-    { text: "Detectar efectos adversos antes de que ocurran ayuda a farmacovigilancia", options: { bullet: true, breakLine: true } },
-    { text: "Mejora la seguridad del paciente (Metformina, Adalimumab, etc.)", options: { bullet: true } },
-  ], { x: 7.0, y: 3.7, w: 5.7, h: 3.0,
-       fontSize: 15, fontFace: "Calibri", color: C.textDk, paraSpaceAfter: 8 });
+    { text: "Accuracy engaña → usamos F1-macro", options: { bullet: true, bold: true, breakLine: true } },
+    { text: "Etiquetas con frecuencias dispares", options: { bullet: true, bold: true, breakLine: true } },
+    { text: "Farmacovigilancia preventiva", options: { bullet: true, bold: true, breakLine: true } },
+    { text: "Seguridad del paciente", options: { bullet: true, bold: true } },
+  ], { x: 7.0, y: 3.8, w: 5.7, h: 3.0,
+       fontSize: 18, fontFace: "Calibri", color: C.textDk, paraSpaceAfter: 18 });
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -279,9 +279,9 @@ function card(slide, x, y, w, h, fill = C.card) {
   s.addText("Frase clave", { x: RX + 0.2, y: 5.6, w: 5.5, h: 0.3,
     fontSize: 11, fontFace: "Calibri", bold: true, color: C.red, charSpacing: 4, margin: 0 });
   s.addText(
-    "El cromosoma son los pesos de la red. El AG no usa gradiente: combina y muta pesos hasta que la red predice Ŷ parecidas a las Y reales.",
+    "Cromosoma = pesos de la red.\nAG en vez de retropropagación.",
     { x: RX + 0.2, y: 5.95, w: 5.5, h: 1.2,
-      fontSize: 13, fontFace: "Cambria", italic: true, color: C.textLt }
+      fontSize: 15, fontFace: "Cambria", italic: true, color: C.textLt }
   );
 }
 
@@ -313,15 +313,11 @@ function card(slide, x, y, w, h, fill = C.card) {
     align: "center" });
 
   s.addText([
-    { text: "Por qué REAL y no binario:", options: { bold: true, color: C.navy, breakLine: true } },
-    { text: "  Los pesos de una red son continuos.", options: { bullet: true, breakLine: true } },
-    { text: "  Codificar en bits perdería precisión.", options: { bullet: true, breakLine: true } },
-    { text: "  Operadores naturales (reales): cruce aritmético + mutación gaussiana.", options: { bullet: true, breakLine: true } },
-    { text: " ", options: { breakLine: true } },
-    { text: "Propiedad clave: LOCALIDAD", options: { bold: true, color: C.navy, breakLine: true } },
-    { text: "  Cada gen es un peso individual; mutaciones chicas → cambios chicos en el fenotipo. Cumple con \"perfect representation\" del material.", options: { bullet: true } },
-  ], { x: 0.7, y: 3.2, w: 5.8, h: 3.8,
-       fontSize: 12, fontFace: "Calibri", color: C.textDk, paraSpaceAfter: 4 });
+    { text: "Real, no binario", options: { bullet: true, bold: true, color: C.navy, breakLine: true } },
+    { text: "Localidad: gen ≡ un peso", options: { bullet: true, bold: true, color: C.navy, breakLine: true } },
+    { text: "Cruce uniforme + mutación gaussiana (operadores para reales)", options: { bullet: true, bold: true, color: C.navy } },
+  ], { x: 0.7, y: 3.4, w: 5.8, h: 3.5,
+       fontSize: 15, fontFace: "Calibri", color: C.textDk, paraSpaceAfter: 14 });
 
   // Fenotipo (derecha)
   card(s, 6.9, 1.6, 5.9, 5.5, C.card);
@@ -358,14 +354,11 @@ function card(slide, x, y, w, h, fill = C.card) {
   }
 
   s.addText([
-    { text: "Cómo se conectan genotipo y fenotipo:", options: { bold: true, color: C.navy, breakLine: true } },
-    { text: "  set_genome(cromosoma) desempaqueta los 7 946", options: { bullet: true, breakLine: true } },
-    { text: "  números en las matrices W1, b1, W2, b2.", options: { breakLine: true } },
-    { text: " ", options: { breakLine: true } },
-    { text: "Forward pass:", options: { bold: true, color: C.navy, breakLine: true } },
-    { text: "  Ŷ = sigmoide( ReLU(X·W1 + b1) · W2 + b2 )", options: { bullet: true } },
-  ], { x: 7.1, y: 3.7, w: 5.5, h: 3.3,
-       fontSize: 12, fontFace: "Calibri", color: C.textDk, paraSpaceAfter: 4 });
+    { text: "1 capa oculta ReLU", options: { bullet: true, bold: true, color: C.navy, breakLine: true } },
+    { text: "98 salidas sigmoides", options: { bullet: true, bold: true, color: C.navy, breakLine: true } },
+    { text: "set_genome(cromosoma) → W1, b1, W2, b2", options: { bullet: true, bold: true, color: C.navy } },
+  ], { x: 7.1, y: 3.9, w: 5.5, h: 3.0,
+       fontSize: 14, fontFace: "Calibri", color: C.textDk, paraSpaceAfter: 12 });
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -385,29 +378,29 @@ function card(slide, x, y, w, h, fill = C.card) {
       title: "Selección por RANK lineal",
       module: "Módulo 4",
       color: C.blue,
-      cfg: "selection = rank, s = 1.7",
-      desc: "Cada individuo recibe probabilidad según su posición en el ranking (no según fitness absoluto). Presión selectiva CONSTANTE = s = 1.7, independiente de la escala del fitness y del colapso de la población.",
+      cfg: "s = 1.7",
+      desc: "Probabilidad por posición en el ranking. Presión selectiva constante, independiente de la escala del fitness.",
     },
     {
       title: "Cruce uniforme",
       module: "Módulo 2",
       color: C.green,
       cfg: "p_crossover = 0.9",
-      desc: "Para cada gen, hijo1 hereda del padre A o B con probabilidad 0.5. Operador primario — recombina building blocks de buenos individuos.",
+      desc: "Cada gen se hereda de A o B con prob. 0.5. Recombina building blocks.",
     },
     {
       title: "Mutación gaussiana",
       module: "Módulo 2",
       color: C.gold,
-      cfg: "p_mutation = 0.05",
-      desc: "Cada gen tiene 5 % de probabilidad de recibir ruido N(0, σ). Operador secundario — reinyecta variación y evita perder alelos.",
+      cfg: "p_mutation = 0.04",
+      desc: "Ruido N(0, σ) sobre cada gen. Reinyecta variación.",
     },
     {
-      title: "Elitismo + control adaptativo",
+      title: "Elitismo + adaptativo",
       module: "Módulo 2/5",
       color: C.red,
       cfg: "elitism = 2, immigrants = 8",
-      desc: "Los 2 mejores pasan intactos. Diversidad medida como std promedio del GENOTIPO: si cae bajo 0.09 se inyectan 8 inmigrantes aleatorios y σ se multiplica ×3 (boost) para explorar de nuevo.",
+      desc: "Los 2 mejores pasan intactos. Si diversidad < 0.09: inmigrantes + σ ×3.",
     },
   ];
 
@@ -442,43 +435,17 @@ function card(slide, x, y, w, h, fill = C.card) {
 
   s.addImage({
     path: path.join(FIG, "ga_convergence.png"),
-    x: 0.5, y: 1.4, w: 8.5, h: 5.0, sizing: { type: "contain", w: 8.5, h: 5.0 },
+    x: 0.4, y: 1.35, w: W - 0.8, h: 5.3, sizing: { type: "contain", w: W - 0.8, h: 5.3 },
   });
 
-  const RX = 9.3, RY = 1.4;
-  card(s, RX, RY, W - RX - 0.5, 5.0);
-  s.addText("Lo que se ve", { x: RX + 0.2, y: RY + 0.1, w: 3.3, h: 0.4,
-    fontSize: 16, fontFace: "Calibri", bold: true, color: C.navy, margin: 0 });
-
-  s.addText([
-    { text: "Mejor fitness 0.05 → 0.14", options: { bullet: true, bold: true, breakLine: true } },
-    { text: "  en 300 generaciones", options: { breakLine: true } },
-    { text: " ", options: { breakLine: true } },
-    { text: "Diversidad genotípica (naranja)", options: { bullet: true, bold: true, breakLine: true } },
-    { text: "  std promedio del cromosoma", options: { breakLine: true } },
-    { text: "  (independiente del fitness)", options: { breakLine: true } },
-    { text: " ", options: { breakLine: true } },
-    { text: "5 inyecciones de inmigrantes", options: { bullet: true, bold: true, breakLine: true } },
-    { text: "  al cruzar el umbral 0.09", options: { breakLine: true } },
-    { text: "  (control adaptativo, Módulo 5)", options: { breakLine: true } },
-    { text: " ", options: { breakLine: true } },
-    { text: "Presión selectiva = 1.7", options: { bullet: true, bold: true, breakLine: true } },
-    { text: "  rank lineal, constante", options: { breakLine: true } },
-    { text: "  (independiente de la población, Módulo 4)", options: { breakLine: true } },
-    { text: " ", options: { breakLine: true } },
-    { text: "σ adaptativo (verde)", options: { bullet: true, bold: true, breakLine: true } },
-    { text: "  reacciona a la diversidad", options: {} },
-  ], { x: RX + 0.2, y: RY + 0.55, w: 3.3, h: 4.3,
-       fontSize: 11, fontFace: "Calibri", color: C.textDk });
-
   s.addShape(pres.shapes.ROUNDED_RECTANGLE, {
-    x: 0.5, y: 6.55, w: W - 1, h: 0.7, rectRadius: 0.08,
+    x: 0.5, y: 6.75, w: W - 1, h: 0.6, rectRadius: 0.08,
     fill: { color: C.navy }, line: { color: C.navy, width: 0 },
   });
   s.addText(
-    "3 métricas independientes: fitness (Módulo 6), diversidad genotípica y presión selectiva teórica (rank, Módulo 4). El ciclo cae → inyecta → recupera se ve 5 veces gracias a los inmigrantes adaptativos (Módulo 5).",
-    { x: 0.7, y: 6.6, w: W - 1.4, h: 0.6,
-      fontSize: 13, fontFace: "Cambria", italic: true, color: C.textLt,
+    "Fitness  ·  Diversidad genotípica  ·  Presión selectiva     —     3 métricas independientes (Módulos 4, 5, 6)",
+    { x: 0.7, y: 6.75, w: W - 1.4, h: 0.6,
+      fontSize: 15, fontFace: "Cambria", italic: true, color: C.textLt,
       align: "center", valign: "middle" }
   );
 }
@@ -506,12 +473,12 @@ function card(slide, x, y, w, h, fill = C.card) {
     [{ text: "120" }, { text: "0.132", options: { align: "right" } }, { text: "0.0998", options: { align: "right" } }, { text: "3 min", options: { align: "right" } }, { text: "0.0011/gen", options: { align: "right" } }],
     [
       { text: "300  ★", options: { bold: true, color: C.green, fill: { color: C.cardGr } } },
-      { text: "0.164", options: { align: "right", bold: true, color: C.green, fill: { color: C.cardGr } } },
-      { text: "0.1091", options: { align: "right", bold: true, color: C.green, fill: { color: C.cardGr } } },
-      { text: "7.5 min", options: { align: "right", bold: true, color: C.green, fill: { color: C.cardGr } } },
-      { text: "0.00018/gen", options: { align: "right", bold: true, color: C.green, fill: { color: C.cardGr } } },
+      { text: "0.138", options: { align: "right", bold: true, color: C.green, fill: { color: C.cardGr } } },
+      { text: "0.106", options: { align: "right", bold: true, color: C.green, fill: { color: C.cardGr } } },
+      { text: "7.15 min", options: { align: "right", bold: true, color: C.green, fill: { color: C.cardGr } } },
+      { text: "0.00013/gen", options: { align: "right", bold: true, color: C.green, fill: { color: C.cardGr } } },
     ],
-    [{ text: "500" }, { text: "0.166", options: { align: "right" } }, { text: "0.1089", options: { align: "right" } }, { text: "12.7 min", options: { align: "right" } }, { text: "0.00001/gen", options: { align: "right" } }],
+    [{ text: "500" }, { text: "0.140", options: { align: "right" } }, { text: "0.105", options: { align: "right" } }, { text: "11.9 min", options: { align: "right" } }, { text: "0.00001/gen", options: { align: "right" } }],
   ];
   s.addTable(stopTbl, {
     x: 0.5, y: 1.6, w: W - 1, colW: [2.4, 2.6, 2.4, 2.4, 2.5],
@@ -526,10 +493,10 @@ function card(slide, x, y, w, h, fill = C.card) {
     x: 0.7, y: 4.15, w: 5.7, h: 0.45,
     fontSize: 15, fontFace: "Calibri", bold: true, color: C.green, margin: 0 });
   s.addText([
-    { text: "La tasa de mejora cae 110× entre el inicio y el final.", options: { breakLine: true } },
+    { text: "La tasa de mejora cae ≈ 100× entre el inicio y el final.", options: { breakLine: true } },
     { text: " ", options: { breakLine: true } },
-    { text: "120 → 300 gen: +0.014 (mejora útil).", options: { bullet: true, breakLine: true } },
-    { text: "300 → 500 gen: solo +0.002 (casi cero).", options: { bullet: true } },
+    { text: "120 → 300 gen: mejora útil de fitness.", options: { bullet: true, breakLine: true } },
+    { text: "300 → 500 gen: mejora casi nula (< 0.002).", options: { bullet: true } },
   ], { x: 0.7, y: 4.65, w: 5.7, h: 2.3, fontSize: 13, color: C.textDk, paraSpaceAfter: 4 });
 
   card(s, 6.7, 4.0, 6.1, 3.0, C.cardAlt);
@@ -537,8 +504,8 @@ function card(slide, x, y, w, h, fill = C.card) {
     x: 6.9, y: 4.15, w: 5.7, h: 0.45,
     fontSize: 15, fontFace: "Calibri", bold: true, color: C.red, margin: 0 });
   s.addText([
-    { text: "En 500 gen, el fitness sigue subiendo (0.164 → 0.166)", options: { bullet: true, breakLine: true } },
-    { text: "pero el F1 de test BAJA (0.1091 → 0.1089).", options: { breakLine: true } },
+    { text: "En 500 gen, el fitness sigue subiendo ligeramente (0.138 → 0.140)", options: { bullet: true, breakLine: true } },
+    { text: "pero el F1 de test se estanca o baja (0.106 → 0.105).", options: { breakLine: true } },
     { text: " ", options: { breakLine: true } },
     { text: "El AG empieza a sobreajustarse al subset de fitness.", options: { breakLine: true } },
     { text: " ", options: { breakLine: true } },
@@ -553,15 +520,9 @@ function card(slide, x, y, w, h, fill = C.card) {
   const s = pres.addSlide();
   header(s, "8", "Impacto del AG en el sistema (ablación)");
 
-  s.addText(
-    "Le sacamos al AG un componente a la vez. Mismo presupuesto: 2 040 evaluaciones de fitness en todas las configuraciones.",
-    { x: 0.5, y: 1.15, w: W - 1, h: 0.35,
-      fontSize: 13, fontFace: "Calibri", italic: true, color: C.textMd }
-  );
-
   s.addImage({
     path: path.join(FIG, "ablation.png"),
-    x: 0.5, y: 1.55, w: 7.5, h: 4.0, sizing: { type: "contain", w: 7.5, h: 4.0 },
+    x: 0.4, y: 1.3, w: 8.5, h: 4.9, sizing: { type: "contain", w: 8.5, h: 4.9 },
   });
 
   const tbl = [
@@ -581,51 +542,59 @@ function card(slide, x, y, w, h, fill = C.card) {
     ],
   ];
   s.addTable(tbl, {
-    x: 8.3, y: 1.55, w: 4.5, colW: [2.4, 1.05, 1.05],
-    fontSize: 12, fontFace: "Calibri", color: C.textDk,
+    x: 9.1, y: 1.9, w: 3.8, colW: [2.0, 0.9, 0.9],
+    fontSize: 13, fontFace: "Calibri", color: C.textDk,
     border: { pt: 0.5, color: C.line },
-    rowH: 0.42,
+    rowH: 0.48,
   });
 
+  // Nota de honestidad sobre "sin elitismo"
+  s.addText(
+    "Nota: en este ablation reducido (40 ind × 50 gen, sin inmigrantes), \"sin elitismo\" (0.075) supera al AG completo (0.065). En el run real (80 × 300 con inmigrantes) el elitismo sí aporta — el elitismo alto sobre población chica concentra demasiado.",
+    { x: 0.5, y: 6.30, w: W - 1, h: 0.5,
+      fontSize: 11, fontFace: "Calibri", italic: true, color: C.textMd,
+      align: "center", valign: "middle" }
+  );
+
   s.addShape(pres.shapes.ROUNDED_RECTANGLE, {
-    x: 0.5, y: 5.7, w: W - 1, h: 1.6, rectRadius: 0.1,
-    fill: { color: C.card }, line: { color: C.card, width: 0 },
+    x: 0.5, y: 6.90, w: W - 1, h: 0.5, rectRadius: 0.08,
+    fill: { color: C.navy }, line: { color: C.navy, width: 0 },
   });
-  s.addText([
-    { text: "Random search → AG completo: F1 +27 %.", options: { bold: true, color: C.red, breakLine: true } },
-    { text: "Con el mismo presupuesto de evaluaciones, la evolución hace algo más que muestrear al azar — la presión de selección + los operadores guían la búsqueda.", options: { breakLine: true } },
-    { text: " ", options: { breakLine: true } },
-    { text: "Cruce vs mutación.", options: { bold: true, color: C.blue, breakLine: true } },
-    { text: "Solo cruce (0.096) > solo mutación (0.082). Coincide con Goldberg (SGA, Módulo 2): cruce es primario, mutación es secundario.", options: { } },
-  ], { x: 0.8, y: 5.8, w: W - 1.6, h: 1.4, fontSize: 12, fontFace: "Calibri", color: C.textDk });
+  s.addText(
+    "Random search → AG completo: F1 +27 %.  ·  Cada operador aporta.",
+    { x: 0.7, y: 6.90, w: W - 1.4, h: 0.5,
+      fontSize: 15, fontFace: "Cambria", italic: true, color: C.textLt,
+      align: "center", valign: "middle" }
+  );
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
 // HELPER para slides de experimentos (9a/9b/9c)
 // ═════════════════════════════════════════════════════════════════════════════
-function experimentSlide(num, title, imgPath, tbl, takeaway, takeawayColor) {
+function experimentSlide(num, title, imgPath, tbl, takeawayShort, takeawayColor) {
   const s = pres.addSlide();
   header(s, num, title);
 
   s.addImage({
     path: imgPath,
-    x: 0.5, y: 1.4, w: 8.0, h: 4.6, sizing: { type: "contain", w: 8.0, h: 4.6 },
+    x: 0.4, y: 1.3, w: 8.5, h: 5.4, sizing: { type: "contain", w: 8.5, h: 5.4 },
   });
 
   s.addTable(tbl, {
-    x: 8.8, y: 1.55, w: 4.0, colW: [1.5, 1.25, 1.25],
-    fontSize: 12, fontFace: "Calibri", color: C.textDk,
+    x: 9.1, y: 1.9, w: 3.8, colW: [1.4, 1.2, 1.2],
+    fontSize: 13, fontFace: "Calibri", color: C.textDk,
     border: { pt: 0.5, color: C.line },
-    rowH: 0.4,
+    rowH: 0.48,
   });
 
   s.addShape(pres.shapes.ROUNDED_RECTANGLE, {
-    x: 0.5, y: 6.2, w: W - 1, h: 1.1, rectRadius: 0.1,
-    fill: { color: takeawayColor }, line: { color: takeawayColor, width: 0 },
+    x: 0.5, y: 6.85, w: W - 1, h: 0.5, rectRadius: 0.08,
+    fill: { color: C.navy }, line: { color: C.navy, width: 0 },
   });
-  s.addText(takeaway, {
-    x: 0.8, y: 6.3, w: W - 1.6, h: 0.9,
-    fontSize: 13, fontFace: "Calibri", color: C.textDk, valign: "middle",
+  s.addText(takeawayShort, {
+    x: 0.7, y: 6.85, w: W - 1.4, h: 0.5,
+    fontSize: 15, fontFace: "Cambria", italic: true, color: C.textLt,
+    align: "center", valign: "middle"
   });
 }
 
@@ -652,10 +621,7 @@ experimentSlide(
     [{ text: "0.20" }, { text: "0.093", options: { align: "right" } }, { text: "0.065", options: { align: "right" } }],
     [{ text: "0.30" }, { text: "0.092", options: { align: "right" } }, { text: "0.071", options: { align: "right" } }],
   ],
-  [
-    { text: "Patrón en U invertida — exactamente lo que predice la teoría:", options: { bold: true, color: C.red, breakLine: true } },
-    { text: "Mutación muy baja (0.01) → no explora. Óptima (0.05-0.10) → balance exploración/explotación. Alta (0.20-0.30) → destruye soluciones buenas más rápido que las construye.", options: {} },
-  ],
+  "U invertida — óptimo en p_mut ≈ 0.05–0.10.",
   C.cardAlt
 );
 
@@ -680,10 +646,7 @@ experimentSlide(
       { text: "0.077", options: { align: "right", bold: true, color: C.red, fill: { color: C.cardAlt } } },
     ],
   ],
-  [
-    { text: "Patrón monótono creciente:", options: { bold: true, color: C.blue, breakLine: true } },
-    { text: "Cuanta más recombinación, mejor. Confirma el rol del cruce como operador primario en alta dimensionalidad (7 946 dims).", options: {} },
-  ],
+  "Monótono creciente — cuanta más recombinación, mejor.",
   C.card
 );
 
@@ -707,11 +670,7 @@ experimentSlide(
     [{ text: "one_point" }, { text: "0.086", options: { align: "right" } }, { text: "0.060", options: { align: "right" } }],
     [{ text: "arithmetic" }, { text: "0.086", options: { align: "right" } }, { text: "0.064", options: { align: "right" } }],
   ],
-  [
-    { text: "Uniforme gana en alta dimensión:", options: { bold: true, color: C.red, breakLine: true } },
-    { text: "Con 7 946 dimensiones, el corte de un punto rompe bloques útiles dispersos. El aritmético queda \"entre los padres\" → poca exploración.", options: { breakLine: true } },
-    { text: "Configuración final elegida: p_mutation = 0.05, p_crossover = 0.9, operador = uniforme.", options: { bold: true, color: C.navy } },
-  ],
+  "Uniforme gana en alta dimensión (7 946 dims).",
   C.cardAlt
 );
 
@@ -722,45 +681,27 @@ experimentSlide(
   const s = pres.addSlide();
   header(s, "10", "Multi-objetivo: NSGA-II (Módulo 7)");
 
-  s.addText("Precisión y recall están en conflicto: un solo F1 esconde el compromiso.", {
-    x: 0.5, y: 1.15, w: W - 1, h: 0.35,
-    fontSize: 13, fontFace: "Calibri", italic: true, color: C.textMd });
-
-  // Imagen del frente de Pareto
   s.addImage({
     path: path.join(FIG, "nsga2_pareto_front.png"),
-    x: 0.5, y: 1.55, w: 7.5, h: 5.0, sizing: { type: "contain", w: 7.5, h: 5.0 },
+    x: 0.4, y: 1.35, w: W - 0.8, h: 4.9, sizing: { type: "contain", w: W - 0.8, h: 4.9 },
   });
 
-  // Panel derecho
-  card(s, 8.3, 1.55, 4.5, 5.0, C.cardPu);
-  s.addText("Qué cambia respecto al AG normal", {
-    x: 8.5, y: 1.7, w: 4.2, h: 0.4,
-    fontSize: 14, fontFace: "Calibri", bold: true, color: C.purple, margin: 0 });
-
-  s.addText([
-    { text: "Antes (AG mono-objetivo):", options: { bold: true, breakLine: true } },
-    { text: "  un solo número (F1) por individuo.", options: { bullet: true, breakLine: true } },
-    { text: " ", options: { breakLine: true } },
-    { text: "Ahora (NSGA-II):", options: { bold: true, breakLine: true } },
-    { text: "  cada individuo tiene 2 fitness (precisión y recall).", options: { bullet: true, breakLine: true } },
-    { text: "  selección por non-dominated sort.", options: { bullet: true, breakLine: true } },
-    { text: "  diversidad mantenida por crowding distance.", options: { bullet: true, breakLine: true } },
-    { text: " ", options: { breakLine: true } },
-    { text: "Resultado:", options: { bold: true, color: C.purple, breakLine: true } },
-    { text: "  ~21 soluciones no dominadas — el frente de Pareto.", options: { bullet: true, breakLine: true } },
-    { text: "  El usuario elige el punto según prefiera precisión o cobertura.", options: { bullet: true } },
-  ], { x: 8.5, y: 2.15, w: 4.2, h: 4.3, fontSize: 11, fontFace: "Calibri", color: C.textDk, paraSpaceAfter: 4 });
+  s.addText(
+    "Nota: precision/recall crudos, sin optimización de umbral por etiqueta — por eso los valores absolutos son inferiores al modelo mono-objetivo (slide 12).",
+    { x: 0.5, y: 6.35, w: W - 1, h: 0.4,
+      fontSize: 11, fontFace: "Calibri", italic: true, color: C.textMd,
+      align: "center", valign: "middle" }
+  );
 
   s.addShape(pres.shapes.ROUNDED_RECTANGLE, {
-    x: 0.5, y: 6.7, w: W - 1, h: 0.6, rectRadius: 0.08,
+    x: 0.5, y: 6.85, w: W - 1, h: 0.5, rectRadius: 0.08,
     fill: { color: C.navy }, line: { color: C.navy, width: 0 },
   });
   s.addText(
-    "Demuestra que la evolución también puede explorar trade-offs en lugar de optimizar un único objetivo.",
-    { x: 0.7, y: 6.7, w: W - 1.4, h: 0.6,
-      fontSize: 13, fontFace: "Cambria", italic: true, color: C.textLt,
-      align: "center", valign: "middle", margin: 0 }
+    "Precisión vs recall  ·  frente de Pareto  ·  non-dominated sort + crowding distance",
+    { x: 0.7, y: 6.85, w: W - 1.4, h: 0.5,
+      fontSize: 15, fontFace: "Cambria", italic: true, color: C.textLt,
+      align: "center", valign: "middle" }
   );
 }
 
@@ -771,39 +712,20 @@ experimentSlide(
   const s = pres.addSlide();
   header(s, "11", "XAI — explicabilidad del individuo (Módulo 9)");
 
-  s.addText("Como la red es chica, sus pesos son inspeccionables: derivamos importancia por feature.", {
-    x: 0.5, y: 1.15, w: W - 1, h: 0.35,
-    fontSize: 13, fontFace: "Calibri", italic: true, color: C.textMd });
-
   s.addImage({
     path: path.join(FIG, "ga_feature_importance.png"),
-    x: 0.5, y: 1.55, w: 8.0, h: 5.0, sizing: { type: "contain", w: 8.0, h: 5.0 },
+    x: 0.4, y: 1.35, w: W - 0.8, h: 5.3, sizing: { type: "contain", w: W - 0.8, h: 5.3 },
   });
 
-  card(s, 8.8, 1.55, 4.0, 5.0, C.cardGr);
-  s.addText("Cómo se calcula", {
-    x: 9.0, y: 1.7, w: 3.7, h: 0.4,
-    fontSize: 14, fontFace: "Calibri", bold: true, color: C.green, margin: 0 });
-
-  s.addText([
-    { text: "Propagamos las magnitudes:", options: { breakLine: true } },
-    { text: "  | W1 |  ·  | W2 |", options: { breakLine: true } },
-    { text: " ", options: { breakLine: true } },
-    { text: "Cada feature (cada columna de entrada) recibe un score según cuánto pesa en las decisiones finales.", options: { breakLine: true } },
-    { text: " ", options: { breakLine: true } },
-    { text: "Qué pesa más", options: { bold: true, color: C.green, breakLine: true } },
-    { text: "Fármacos concretos e indicaciones aparecen primero — el modelo aprendió relaciones interpretables.", options: {} },
-  ], { x: 9.0, y: 2.15, w: 3.7, h: 4.3, fontSize: 11, fontFace: "Calibri", color: C.textDk, paraSpaceAfter: 4 });
-
   s.addShape(pres.shapes.ROUNDED_RECTANGLE, {
-    x: 0.5, y: 6.7, w: W - 1, h: 0.6, rectRadius: 0.08,
+    x: 0.5, y: 6.75, w: W - 1, h: 0.6, rectRadius: 0.08,
     fill: { color: C.navy }, line: { color: C.navy, width: 0 },
   });
   s.addText(
-    "El individuo evolucionado NO es una caja negra: la representación elegida lo hace interpretable.",
-    { x: 0.7, y: 6.7, w: W - 1.4, h: 0.6,
-      fontSize: 13, fontFace: "Cambria", italic: true, color: C.textLt,
-      align: "center", valign: "middle", margin: 0 }
+    "Importancia por feature = | W1 | · | W2 |     —     el individuo evolucionado no es caja negra",
+    { x: 0.7, y: 6.75, w: W - 1.4, h: 0.6,
+      fontSize: 15, fontFace: "Cambria", italic: true, color: C.textLt,
+      align: "center", valign: "middle" }
   );
 }
 
@@ -815,10 +737,10 @@ experimentSlide(
   header(s, "12", "Resultados finales");
 
   const stats = [
-    ["F1-macro test", "0.109", "modelo evolucionado", C.red],
-    ["Precision macro", "0.125", "del individuo ganador", C.blue],
-    ["F1 vs SIDER 4.1", "0.32", "validación externa", C.green],
-    ["Tiempo / generaciones", "7.5 min", "300 generaciones en CPU", C.gold],
+    ["F1-macro test", "0.106", "modelo evolucionado", C.red],
+    ["Precision macro", "0.111", "del individuo ganador", C.blue],
+    ["F1 vs SIDER 4.1", "0.306", "validación externa", C.green],
+    ["Tiempo / generaciones", "7.15 min", "300 generaciones en CPU", C.gold],
   ];
   for (let i = 0; i < 4; i++) {
     const [label, val, sub, color] = stats[i];
@@ -841,36 +763,18 @@ experimentSlide(
 
   s.addImage({
     path: path.join(FIG, "sider_validation.png"),
-    x: 0.5, y: 3.25, w: 7.5, h: 3.7, sizing: { type: "contain", w: 7.5, h: 3.7 },
+    x: 0.4, y: 3.15, w: W - 0.8, h: 3.5, sizing: { type: "contain", w: W - 0.8, h: 3.5 },
   });
 
-  card(s, 8.3, 3.25, 4.5, 3.7);
-  s.addText("Extra: selección de features con cromosoma binario", {
-    x: 8.55, y: 3.4, w: 4.0, h: 0.6,
-    fontSize: 14, fontFace: "Calibri", bold: true, color: C.purple, margin: 0 });
-
-  s.addText([
-    { text: "Otro genotipo, otro AG:", options: { bold: true, breakLine: true } },
-    { text: "  cromosoma binario {0,1}^154", options: { bullet: true, breakLine: true } },
-    { text: "  operadores canónicos: bit-flip + cruce uniforme", options: { bullet: true, breakLine: true } },
-    { text: " ", options: { breakLine: true } },
-    { text: "Resultado:", options: { bold: true, color: C.purple, breakLine: true } },
-    { text: "  el AG eligió 59 de 154 features", options: { bullet: true, breakLine: true } },
-    { text: "  F1 mejoró 0.124 → 0.133", options: { bullet: true, breakLine: true } },
-    { text: "  menos features y mejor desempeño", options: { bullet: true, breakLine: true } },
-    { text: " ", options: { breakLine: true } },
-    { text: "Cubre Módulo 2 y 3 (genotipo binario).", options: { italic: true, color: C.textMd } },
-  ], { x: 8.55, y: 4.0, w: 4.0, h: 2.9, fontSize: 11, fontFace: "Calibri", color: C.textDk });
-
   s.addShape(pres.shapes.ROUNDED_RECTANGLE, {
-    x: 0.5, y: 7.05, w: W - 1, h: 0.3, rectRadius: 0.06,
+    x: 0.5, y: 6.75, w: W - 1, h: 0.6, rectRadius: 0.08,
     fill: { color: C.navy }, line: { color: C.navy, width: 0 },
   });
   s.addText(
-    "El modelo predice efectos que ya están documentados por farmacólogos en una base independiente — el AG aprendió relaciones reales.",
-    { x: 0.7, y: 7.05, w: W - 1.4, h: 0.3,
-      fontSize: 11, fontFace: "Cambria", italic: true, color: C.textLt,
-      align: "center", valign: "middle", margin: 0 }
+    "Validación externa con SIDER: el AG aprendió relaciones documentadas por farmacólogos",
+    { x: 0.7, y: 6.75, w: W - 1.4, h: 0.6,
+      fontSize: 15, fontFace: "Cambria", italic: true, color: C.textLt,
+      align: "center", valign: "middle" }
   );
 }
 
