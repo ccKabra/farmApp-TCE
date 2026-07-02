@@ -71,7 +71,7 @@ GA_HIDDEN = 24             # neuronas en la capa oculta (ReLU); salida = sigmoid
 
 # ── Hiperparametros del Algoritmo Genetico ────────────────────────────────────
 GA_POP_SIZE      = 80      # tamanio de poblacion (PopSize)
-GA_GENERATIONS   = 120     # nro de generaciones (criterio de parada fijo)
+GA_GENERATIONS   = 300     # nro de generaciones (criterio de parada fijo)
 GA_TOURNAMENT_K  = 3       # tamanio del torneo (presion de seleccion)
 GA_P_CROSSOVER   = 0.9     # probabilidad de cruce (pxover)
 GA_CROSSOVER     = "uniform"   # "uniform" | "one_point" | "arithmetic"
@@ -80,10 +80,20 @@ GA_MUT_SIGMA     = 0.25    # desvio inicial de la mutacion gaussiana (sigma_0)
 GA_MUT_SIGMA_END = 0.02    # desvio final (control deterministico: sigma decrece, Modulo 5)
 GA_ELITISM       = 2       # nro de elites que pasan intactos (Modulo 2: elitismo)
 GA_INIT_SCALE    = 1.0     # escala de la inicializacion gaussiana de pesos
-# Control ADAPTATIVO (Modulo 5): cuando la diversidad cae demasiado, se reinyectan
-# inmigrantes aleatorios (random restart parcial) para escapar de optimos locales.
-GA_DIVERSITY_FLOOR = 0.0008  # umbral de std del fitness por debajo del cual se reinyecta
-GA_IMMIGRANTS      = 6       # nro de inmigrantes aleatorios en la reinyeccion
+# ── Seleccion (Modulo 4) ──────────────────────────────────────────────────────
+GA_SELECTION      = "rank"   # "tournament" | "rank"  — rank = presion selectiva CONSTANTE (Modulo 4)
+GA_RANK_S         = 1.7      # presion selectiva para rank lineal (1.0=neutra, 2.0=max)
+
+# ── Control ADAPTATIVO (Modulo 5) ─────────────────────────────────────────────
+# Ahora la reinyeccion de inmigrantes se dispara por diversidad GENOTIPICA
+# (std promedio de los cromosomas), no por diversidad de fitness -> es una
+# senal directa del colapso de la poblacion, no una consecuencia.
+GA_DIV_LOW           = 0.090   # umbral bajo de diversidad -> inyectar diversidad
+GA_DIV_HIGH          = 0.115   # umbral alto de diversidad -> reducir mutacion
+GA_IMMIGRANTS        = 8       # nro de inmigrantes aleatorios cuando diversidad<LOW
+GA_IMMIGRANT_PERIOD  = 15      # cada cuantas gens se pueden inyectar inmigrantes
+GA_SIGMA_BOOST       = 3.0     # multiplicador de sigma cuando diversidad<LOW
+GA_SIGMA_DAMP        = 0.5     # multiplicador de sigma cuando diversidad>HIGH
 
 # Conjunto de fitness: subconjunto de TRAIN para acelerar (None = usar todo train).
 GA_FIT_SUBSAMPLE = 5000

@@ -125,14 +125,15 @@ STAGES = [
     },
     {
         "titulo": "Operadores evolutivos",
-        "que": "Generacion a generacion: elegimos padres por TORNEO (compiten de a 3, "
-               "gana el mas apto), los combinamos con CRUCE, y aplicamos MUTACION "
-               "GAUSSIANA (ruido a algunos pesos). Ademas, los 2 mejores pasan intactos "
-               "por ELITISMO: garantia de que el mejor nunca empeora.",
-        "base": "Seleccion, cruce, mutacion y elitismo (Modulo 2).",
-        "archivo": "train_ga.py (tournament/crossover/mutate)",
+        "que": "Generacion a generacion: elegimos padres por RANK LINEAL (probabilidad "
+               "segun posicion en el ranking, presion selectiva s=1.7 constante), los "
+               "combinamos con CRUCE, y aplicamos MUTACION GAUSSIANA (ruido a algunos "
+               "pesos). Ademas, los 2 mejores pasan intactos por ELITISMO: garantia de "
+               "que el mejor nunca empeora.",
+        "base": "Seleccion (Modulo 4), cruce, mutacion y elitismo (Modulo 2).",
+        "archivo": "train_ga.py (rank_selection_probs/crossover/mutate)",
         "ejemplo": _flow(
-            _box("PADRES", "individuo A + individuo B<br>(ganaron su torneo)", "raw"),
+            _box("PADRES", "individuo A + individuo B<br>(seleccionados por rank)", "raw"),
             _box("cruce + mutacion", "mezcla de pesos +<br>ruido gaussiano N(0,sigma)", "proc"),
             _box("HIJOS", "nuevas redes, algunas<br>mejores que los padres", "out"),
             note="La recombinacion explota lo bueno que ya existe; la mutacion mantiene "
@@ -257,14 +258,16 @@ DECISIONS = [
         "archivo": "train_ga.py, init_population()",
     },
     {
-        "cat": "evolutivo", "etiqueta": "Seleccion por torneo, no ruleta",
-        "problema": "La ruleta sufre con superindividuos (uno muy apto acapara la "
-                    "reproduccion -> convergencia prematura) y es sensible a la escala "
-                    "del fitness.",
-        "solucion": "Usamos seleccion por torneo (k=3): presion de seleccion controlada e "
-                    "invariante a la escala. Monitoreamos SelPres = MaxFit/AveFit.",
-        "conv": "Presion de seleccion moderada para no perder diversidad temprano.",
-        "archivo": "train_ga.py, tournament_select()",
+        "cat": "evolutivo", "etiqueta": "Seleccion por rank lineal, no ruleta ni torneo",
+        "problema": "La ruleta sufre con superindividuos y es sensible a la escala del "
+                    "fitness; el torneo tambien varia su presion cuando el fitness colapsa "
+                    "a un rango chico (como pasa en este problema).",
+        "solucion": "Usamos seleccion por RANK lineal (s=1.7): la probabilidad depende "
+                    "de la POSICION en el ranking, no del fitness absoluto. Presion "
+                    "selectiva CONSTANTE = 1.7, independiente de la escala del fitness "
+                    "(Modulo 4).",
+        "conv": "Rank mantiene presion controlada aun cuando el fitness converge.",
+        "archivo": "train_ga.py, rank_selection_probs()",
     },
     {
         "cat": "evolutivo", "etiqueta": "Diversidad y convergencia prematura",

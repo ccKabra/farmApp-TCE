@@ -164,7 +164,7 @@ with tab_story:
     st.info(
         "**Que parte es Computacion Evolutiva.** Etapas 5 a 11 del diagrama: "
         "genotipo real = pesos de la red (Modulo 3); poblacion + funcion de fitness "
-        "F1-macro (Modulo 4); seleccion por torneo, cruce, mutacion gaussiana y "
+        "F1-macro (Modulo 4); seleccion por rank lineal, cruce, mutacion gaussiana y "
         "elitismo (Modulo 2); control deterministico de parametros (Modulo 5); "
         "metricas de convergencia (Modulo 6); NSGA-II multi-objetivo (Modulo 7) y "
         "explicabilidad del individuo (Modulo 9). Las etapas 1 a 4 (datos FAERS y "
@@ -457,7 +457,7 @@ with tab_analysis:
             f"Fenotipo: red {ga_cfg.get('input_dim','?')}->{ga_cfg.get('hidden_dim','?')}"
             f"->{ga_cfg.get('output_dim','?')} (1 capa oculta, ReLU + sigmoide). "
             f"AG: poblacion {ga.get('pop_size','?')}, {ga.get('generations','?')} generaciones, "
-            f"seleccion por torneo (k={ga.get('tournament_k','?')}), cruce {ga.get('crossover','?')} "
+            f"seleccion por rank lineal (s=1.7, presion constante), cruce {ga.get('crossover','?')} "
             f"(pc={ga.get('p_crossover','?')}), mutacion gaussiana (pm={ga.get('p_mutation','?')}, "
             f"sigma {ga.get('sigma0','?')}->{ga.get('sigma_end','?')}), elitismo {ga.get('elitism','?')}."
         )
@@ -474,7 +474,7 @@ with tab_analysis:
         st.info(
             "El clasificador NO se entrena por retropropagacion: sus pesos son un "
             "**cromosoma de numeros reales** que un Algoritmo Genetico optimiza maximizando "
-            "F1-macro (seleccion por torneo + cruce + mutacion gaussiana + elitismo). La "
+            "F1-macro (seleccion por rank lineal + cruce + mutacion gaussiana + elitismo). La "
             "curva muestra la convergencia: el mejor individuo y la media de la poblacion "
             "suben generacion a generacion. Conceptos de la materia: genotipo no binario "
             "(Modulo 3), seleccion y fitness (Modulo 4), control de parametros (Modulo 5) "
